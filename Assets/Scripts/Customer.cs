@@ -9,7 +9,6 @@ public class Customer : MonoBehaviour
     [SerializeField] private Button satisfyButton;
 
     private Inventory inventory;
-    private VictorySlider victorySlider;
     private Slider patienceSlider;
 
     public string DesiredItem;
@@ -18,7 +17,6 @@ public class Customer : MonoBehaviour
     void Awake()
     {
         inventory = FindObjectOfType<Inventory>();
-        victorySlider = FindObjectOfType<VictorySlider>();
         patienceSlider = GetComponentInChildren<Slider>();
         Items items = new Items();
 
@@ -72,13 +70,11 @@ public class Customer : MonoBehaviour
     public void Satisfy()
     {
         inventory.RemoveItem(DesiredItem);
-        victorySlider.IncreaseValue();
         Destroy(gameObject);
     }
 
     void LeaveAngrily()
     {
-        victorySlider.DecreaseValue();
         Destroy(gameObject);
     }
 }

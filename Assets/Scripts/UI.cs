@@ -17,6 +17,8 @@ public class UI : MonoBehaviour
     [SerializeField] private RectTransform winPanel;
     [SerializeField] private RectTransform lossPanel;
 
+    [SerializeField] private OrderScreen orderScreen;
+
     public void ShowCollectionScreen()
     {
         inventoryButton.gameObject.SetActive(false);
@@ -82,5 +84,11 @@ public class UI : MonoBehaviour
     public void ShowLossScreen()
     {
         lossPanel.gameObject.SetActive(true);
+    }
+
+    public void ShowOrderScreen()
+    {
+        orderScreen.gameObject.SetActive(true);
+        orderScreen.OnOrderCompleted();
     }
 }

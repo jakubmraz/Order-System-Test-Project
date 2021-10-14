@@ -30,7 +30,23 @@ public class Inventory : MonoBehaviour
         return false;
     }
 
-    public void RemoveItem(string itemName)
+    public bool CheckForItemDuplicate(string itemName)
+    {
+        int itemCount = 0;
+
+        foreach (var itemSlot in ItemSlots)
+        {
+            if (itemSlot.Item)
+                if (itemSlot.Item.itemData.Name == itemName)
+                    itemCount++;
+        }
+
+        if (itemCount >= 2)
+            return true;
+        return false;
+    }
+
+    public bool RemoveItem(string itemName)
     {
         foreach (var itemSlot in ItemSlots)
         {
@@ -38,8 +54,10 @@ public class Inventory : MonoBehaviour
                 if (itemSlot.Item.itemData.Name == itemName)
                 {
                     Destroy(itemSlot.Item.gameObject);
-                    break;
+                    return true;
                 }
         }
+
+        return true;
     }
 }
