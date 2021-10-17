@@ -13,7 +13,8 @@ public class CraftingSystem : MonoBehaviour
     [SerializeField] private ItemSlot botLeftSlot;
     [SerializeField] private ItemSlot botCentreSlot;
     [SerializeField] private ItemSlot botRightSlot;
-    [SerializeField] private ItemSlot resultSlot;
+
+    [SerializeField] public ItemSlot resultSlot;
 
     public List<ItemSlot> craftingSlots;
     private Items items;

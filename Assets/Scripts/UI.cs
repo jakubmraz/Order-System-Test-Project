@@ -54,6 +54,12 @@ public class UI : MonoBehaviour
             //put all items back into inventory
         }
 
+        if (craftingSystem.resultSlot.Item)
+        {
+            Destroy(craftingSystem.resultSlot.Item.gameObject);
+            craftingSystem.resultSlot.Item = null;
+        }
+
         if (garbageCollection.collectionSlot)
         {
             garbageCollection.collectionSlot.KillTheChildren();
