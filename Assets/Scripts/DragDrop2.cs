@@ -113,12 +113,9 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         if (currentSlot.IsResultSlot)
         {
             ItemSlot emptySlot = inventory.FindFirstEmptySlot();
-            currentSlot.Item.transform.SetParent(emptySlot.transform);
             emptySlot.Item = currentSlot.Item;
-            emptySlot.Item.transform.localPosition = new Vector3(0, 0, 0);
-            DragDrop2 dragDrop2 = emptySlot.Item.GetComponent<DragDrop2>();
-            dragDrop2.currentSlot = emptySlot;
             currentSlot.Item = null;
+            currentSlot = emptySlot;
         }
 
         // Changing parent back to slot.
