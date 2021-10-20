@@ -19,6 +19,13 @@ public class UI : MonoBehaviour
 
     [SerializeField] private OrderScreen orderScreen;
 
+    private SavingLoading savingLoading;
+
+    void Awake()
+    {
+        savingLoading = GetComponent<SavingLoading>();
+    }
+
     public void ShowCollectionScreen()
     {
         inventoryButton.gameObject.SetActive(false);
@@ -64,6 +71,8 @@ public class UI : MonoBehaviour
         {
             garbageCollection.collectionSlot.KillTheChildren();
         }
+
+        savingLoading.SaveData();
 
         CloseAll();
     }

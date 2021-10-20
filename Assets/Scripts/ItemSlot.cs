@@ -17,11 +17,11 @@ public class ItemSlot : MonoBehaviour
 
     void Awake()
     {
-        if (debugItem != string.Empty)
-        {
-            Item = Instantiate(itemPrefab, transform).GetComponent<Item>();
-            Item.InitializeItem(debugItem);
-        }
+        //if (debugItem != string.Empty)
+        //{
+        //    Item = Instantiate(itemPrefab, transform).GetComponent<Item>();
+        //    Item.InitializeItem(debugItem);
+        //}
     }
 
     public void KillTheChildren()

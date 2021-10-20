@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEngine;
@@ -6,6 +7,14 @@ using UnityEngine;
 public class Inventory : MonoBehaviour
 {
     public List<ItemSlot> ItemSlots;
+    public Item ItemPrefab;
+    private SavingLoading savingLoading;
+
+    void Awake()
+    {
+        savingLoading = GetComponent<SavingLoading>();
+        LoadSavedInventory();
+    }
 
     public ItemSlot FindFirstEmptySlot()
     {
@@ -16,6 +25,46 @@ public class Inventory : MonoBehaviour
         }
 
         return null;
+    }
+
+    public void LoadSavedInventory()
+    {
+        string inventoryString = savingLoading.LoadData();
+        FillInventory(inventoryString);
+    }
+
+    private void FillInventory(string inventoryString)
+    {
+        string[] splitString = inventoryString.Split(';');
+        int i = 0;
+
+        foreach (var itemSlot in ItemSlots)
+        {
+            if (splitString[i] != "0")
+            {
+                itemSlot.Item = Instantiate(ItemPrefab, itemSlot.transform).GetComponent<Item>();
+                itemSlot.Item.InitializeItem(splitString[i]);
+            }
+
+            i++;
+        }
+    }
+
+    internal string GetInventoryString()
+    {
+        string inventoryString = "";
+
+        foreach (var itemSlot in ItemSlots)
+        {
+            if (itemSlot.Item)
+                inventoryString += itemSlot.Item.itemData.Name;
+            else
+                inventoryString += 0;
+
+            inventoryString += ";";
+        }
+
+        return inventoryString;
     }
 
     public bool CheckForItem(string itemName)
