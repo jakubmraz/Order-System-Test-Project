@@ -29,4 +29,9 @@ public class GarbageContainer : MonoBehaviour
             collectButton.gameObject.SetActive(false);
         }
     }
+
+    public void ReplenishStorage()
+    {
+        itemCount++;
+    }
 }

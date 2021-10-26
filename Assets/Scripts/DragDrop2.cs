@@ -17,6 +17,8 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     private Inventory inventory;
     private GarbageCollection garbageCollection;
 
+    private ItemSlot lastSlot;
+
     void Awake()
     {
         currentSlot = GetComponentInParent<ItemSlot>();
@@ -33,16 +35,13 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     /// <param name="eventData">Event data.</param>
     public void OnBeginDrag(PointerEventData eventData)
     {
+        lastSlot = currentSlot;
+
         if (currentSlot.IsResultSlot)
         {
             craftingSystem.CraftNewItem();
         }
 
-        if (currentSlot.IsCollectionSlot)
-        {
-            garbageCollection.RespawnItem();
-        }
-            
 
         if (!canvas)
         {
@@ -94,7 +93,7 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
                     craftingSystem.Craft();
                 }
 
-                else if (slot.Item != null && !slot.IsResultSlot && !slot.IsCollectionSlot)
+                else if (slot.Item != null && !slot.IsResultSlot && !slot.IsCollectionSlot && !currentSlot.IsCollectionSlot)
                 {
                     currentSlot.Item = slot.Item;
                     currentSlot.Item.transform.SetParent(currentSlot.transform);
@@ -110,12 +109,17 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
             }
         }
 
-        if (currentSlot.IsResultSlot)
+        if (currentSlot.IsResultSlot || currentSlot.IsCollectionSlot)
         {
             ItemSlot emptySlot = inventory.FindFirstEmptySlot();
             emptySlot.Item = currentSlot.Item;
             currentSlot.Item = null;
             currentSlot = emptySlot;
+        }
+
+        if (lastSlot.IsCollectionSlot)
+        {
+            garbageCollection.RespawnItem();
         }
 
         // Changing parent back to slot.
