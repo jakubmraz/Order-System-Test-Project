@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class SavingLoading : MonoBehaviour
 {
-    private string inventoryString = "";
+    private string inventoryString = "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;";
     private Inventory inventory;
 
     void Awake()

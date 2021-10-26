@@ -9,12 +9,15 @@ public class GarbageContainer : MonoBehaviour
     [SerializeField] private GarbageCollection garbageCollection;
 
     public string ContainedItem;
+    public int itemCount;
 
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
             garbageCollection.containedItem = ContainedItem;
+            garbageCollection.itemCount = itemCount;
+            garbageCollection.currentContainer = this;
             collectButton.gameObject.SetActive(true);
         }
     }

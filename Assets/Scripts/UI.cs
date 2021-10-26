@@ -31,7 +31,7 @@ public class UI : MonoBehaviour
         inventoryButton.gameObject.SetActive(false);
         background.gameObject.SetActive(true);
         garbageCollection.gameObject.SetActive(true);
-        garbageCollection.RespawnItem();
+        garbageCollection.SpawnItem();
     }
 
     public void ShowCraftingScreen()
