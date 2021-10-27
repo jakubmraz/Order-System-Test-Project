@@ -20,10 +20,12 @@ public class UI : MonoBehaviour
     [SerializeField] private OrderScreen orderScreen;
 
     private SavingLoading savingLoading;
+    private RealTimeEffects realTimeEffects;
 
     void Awake()
     {
         savingLoading = GetComponent<SavingLoading>();
+        realTimeEffects = FindObjectOfType<RealTimeEffects>();
     }
 
     public void ShowCollectionScreen()
@@ -73,6 +75,7 @@ public class UI : MonoBehaviour
         }
 
         savingLoading.SaveInventoryData();
+        savingLoading.SaveContainerData(realTimeEffects.GarbageContainers);
 
         CloseAll();
     }

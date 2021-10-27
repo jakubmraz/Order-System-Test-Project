@@ -19,6 +19,7 @@ public class RealTimeEffects : MonoBehaviour
             DefaultTimeDivisor = 10;
 
         timeDivisor = savingLoading.LoadCollectionData();
+        savingLoading.LoadContainerData(GarbageContainers);
         if (timeDivisor == 0)
             timeDivisor = DefaultTimeDivisor;
         StartCoroutine(TriggersEveryMinute());
@@ -30,7 +31,8 @@ public class RealTimeEffects : MonoBehaviour
         {
             yield return new WaitForSeconds(60f);
             MinuteTick();
-            savingLoading.SaveCollectionData(timeDivisor); 
+            savingLoading.SaveCollectionData(timeDivisor);
+            savingLoading.SaveContainerData(GarbageContainers);
         }
     }
 
