@@ -29,7 +29,7 @@ public class Inventory : MonoBehaviour
 
     public void LoadSavedInventory()
     {
-        string inventoryString = savingLoading.LoadData();
+        string inventoryString = savingLoading.LoadInventoryData();
         FillInventory(inventoryString);
     }
 

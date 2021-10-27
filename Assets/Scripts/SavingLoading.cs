@@ -13,7 +13,7 @@ public class SavingLoading : MonoBehaviour
         inventory = GetComponent<Inventory>();
     }
 
-    public void SaveData()
+    public void SaveInventoryData()
     {
         inventoryString = inventory.GetInventoryString();
         PlayerPrefs.SetString("Inventory", inventoryString);
@@ -21,12 +21,29 @@ public class SavingLoading : MonoBehaviour
         Debug.Log("Saved!," + inventoryString);
     }
 
-    public string LoadData()
+    public string LoadInventoryData()
     {
         if(PlayerPrefs.HasKey("Inventory"))
             inventoryString = PlayerPrefs.GetString("Inventory");
 
         Debug.Log("Loaded!," + inventoryString);
         return inventoryString;
+    }
+
+    public void SaveCollectionData(int timeDivisor)
+    {
+        PlayerPrefs.SetInt("TimeDivisor", timeDivisor);
+        PlayerPrefs.Save();
+        Debug.Log("Saved!, " + timeDivisor);
+    }
+
+    public int LoadCollectionData()
+    {
+        int timeDivisor;
+        if (PlayerPrefs.HasKey("TimeDivisor"))
+            timeDivisor = PlayerPrefs.GetInt("TimeDivisor");
+        else
+            timeDivisor = 0;
+        return timeDivisor;
     }
 }

@@ -72,7 +72,7 @@ public class UI : MonoBehaviour
             garbageCollection.collectionSlot.KillTheChildren();
         }
 
-        savingLoading.SaveData();
+        savingLoading.SaveInventoryData();
 
         CloseAll();
     }

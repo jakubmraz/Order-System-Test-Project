@@ -6,12 +6,21 @@ using UnityEngine;
 public class RealTimeEffects : MonoBehaviour
 {
     public List<GarbageContainer> GarbageContainers;
-    [HideInInspector] public int timeDivisor;
+    [SerializeField] private SavingLoading savingLoading;
+
+    public int DefaultTimeDivisor;
+    [HideInInspector] public int timeDivisor; //Containers replenish every x minutes where x = timeDivisor (I think)
 
     // Start is called before the first frame update
     void Start()
     {
-        timeDivisor = 10;
+        //Load time divisor from save data
+        if(DefaultTimeDivisor == 0)
+            DefaultTimeDivisor = 10;
+
+        timeDivisor = savingLoading.LoadCollectionData();
+        if (timeDivisor == 0)
+            timeDivisor = DefaultTimeDivisor;
         StartCoroutine(TriggersEveryMinute());
     }
 
@@ -21,11 +30,13 @@ public class RealTimeEffects : MonoBehaviour
         {
             yield return new WaitForSeconds(60f);
             MinuteTick();
+            savingLoading.SaveCollectionData(timeDivisor); 
         }
     }
 
     void MinuteTick()
     {
+        Debug.Log(DateTime.Now.Minute + " " + timeDivisor + " " + DateTime.Now.Minute%timeDivisor);
         if (DateTime.Now.Minute % timeDivisor == 0)
         {
             foreach (var container in GarbageContainers)
