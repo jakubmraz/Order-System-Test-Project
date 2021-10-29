@@ -20,6 +20,7 @@ public class SavingLoading : MonoBehaviour
         PlayerPrefs.SetString("Inventory", inventoryString);
         PlayerPrefs.Save();
         Debug.Log("Saved!," + inventoryString);
+        SaveTime();
     }
 
     public string LoadInventoryData()
@@ -36,6 +37,7 @@ public class SavingLoading : MonoBehaviour
         PlayerPrefs.SetInt("TimeDivisor", timeDivisor);
         PlayerPrefs.Save();
         Debug.Log("Saved!, " + timeDivisor);
+        SaveTime();
     }
 
     public int LoadCollectionData()
@@ -58,6 +60,7 @@ public class SavingLoading : MonoBehaviour
         PlayerPrefs.SetString("Containers", containerString);
         PlayerPrefs.Save();
         Debug.Log("Saved!, " + containerString);
+        SaveTime();
     }
 
     public void LoadContainerData(List<GarbageContainer> containers)
@@ -81,5 +84,28 @@ public class SavingLoading : MonoBehaviour
                 container.itemCount = 10;
             }
         }
+    }
+
+    public void SaveTime()
+    {
+        string dateString = DateTime.Now.ToString();
+        PlayerPrefs.SetString("Time", dateString);
+        PlayerPrefs.Save();
+    }
+
+    public int GetTimeDifference()
+    {
+        DateTime lastTime;
+
+        if (PlayerPrefs.HasKey("Time"))
+        {
+            string dateString = PlayerPrefs.GetString("Time");
+            lastTime = Convert.ToDateTime(dateString);
+        }
+        else lastTime = DateTime.Now;
+
+        int minuteDifference = (DateTime.Now - lastTime).Minutes;
+        Debug.Log(minuteDifference);
+        return minuteDifference;
     }
 }

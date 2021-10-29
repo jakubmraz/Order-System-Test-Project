@@ -22,6 +22,7 @@ public class RealTimeEffects : MonoBehaviour
         savingLoading.LoadContainerData(GarbageContainers);
         if (timeDivisor == 0)
             timeDivisor = DefaultTimeDivisor;
+        FillContainers(savingLoading.GetTimeDifference());
         StartCoroutine(TriggersEveryMinute());
     }
 
@@ -38,12 +39,24 @@ public class RealTimeEffects : MonoBehaviour
 
     void MinuteTick()
     {
-        Debug.Log(DateTime.Now.Minute + " " + timeDivisor + " " + DateTime.Now.Minute%timeDivisor);
         if (DateTime.Now.Minute % timeDivisor == 0)
         {
             foreach (var container in GarbageContainers)
             {
                 container.ReplenishStorage();
+            }
+        }
+        savingLoading.SaveTime();
+    }
+
+    void FillContainers(int timeDifference)
+    {
+        int fillings = Convert.ToInt32(timeDifference / timeDivisor);
+        if (fillings > 0)
+        {
+            foreach (var container in GarbageContainers)
+            {
+                container.ReplenishStorage(fillings);
             }
         }
     }

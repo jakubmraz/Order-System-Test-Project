@@ -34,4 +34,9 @@ public class GarbageContainer : MonoBehaviour
     {
         itemCount++;
     }
+
+    public void ReplenishStorage(int amount)
+    {
+        itemCount += amount;
+    }
 }

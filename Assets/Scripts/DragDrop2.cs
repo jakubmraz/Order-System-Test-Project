@@ -93,8 +93,9 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
                     craftingSystem.Craft();
                 }
 
-                else if (slot.Item != null && !slot.IsResultSlot && !slot.IsCollectionSlot && !currentSlot.IsCollectionSlot)
+                else if (slot.Item != null && !slot.IsResultSlot && !slot.IsCollectionSlot && !currentSlot.IsCollectionSlot && !currentSlot.IsResultSlot)
                 {
+                    Debug.Log("qwert");
                     currentSlot.Item = slot.Item;
                     currentSlot.Item.transform.SetParent(currentSlot.transform);
                     currentSlot.Item.transform.localPosition = Vector3.zero;

@@ -4060,6 +4060,8 @@ MonoBehaviour:
   - {fileID: 657600377}
   - {fileID: 408745548}
   - {fileID: 211015359}
+  savingLoading: {fileID: 312043212}
+  DefaultTimeDivisor: 1
   timeDivisor: 0
 --- !u!4 &751779648
 Transform:

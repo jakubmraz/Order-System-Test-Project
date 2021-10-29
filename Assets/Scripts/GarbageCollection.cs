@@ -41,7 +41,7 @@ public class GarbageCollection : MonoBehaviour
 
     public void SpawnItem()
     {
-        if (itemCount > 1)
+        if (itemCount >= 1)
         {
             collectionSlot.Item = Instantiate(collectionSlot.itemPrefab, collectionSlot.transform).GetComponent<Item>();
             collectionSlot.Item.InitializeItem(containedItem);
