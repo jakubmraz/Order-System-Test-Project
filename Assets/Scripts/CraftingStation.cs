@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class CraftingStation : MonoBehaviour
 {
+    //Originally made for only the crafting station; however, the code is reusable for other stations too
+
     [SerializeField] private Button upcycleButton;
 
     void OnTriggerEnter(Collider other)

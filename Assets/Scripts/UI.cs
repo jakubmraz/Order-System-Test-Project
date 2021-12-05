@@ -13,6 +13,7 @@ public class UI : MonoBehaviour
 
     [SerializeField] private CraftingSystem craftingSystem;
     [SerializeField] private GarbageCollection garbageCollection;
+    [SerializeField] private RectTransform recyclingSystem;
 
     [SerializeField] private RectTransform winPanel;
     [SerializeField] private RectTransform lossPanel;
@@ -92,6 +93,7 @@ public class UI : MonoBehaviour
         craftingGrid.gameObject.SetActive(false);
         inventoryButton.gameObject.SetActive(true);
         garbageCollection.gameObject.SetActive(false);
+        recyclingSystem.gameObject.SetActive(false);
     }
 
     public void ShowVictoryScreen()
@@ -108,5 +110,12 @@ public class UI : MonoBehaviour
     {
         orderScreen.gameObject.SetActive(true);
         orderScreen.OnOrderCompleted();
+    }
+
+    public void ShowRecyclingScreen()
+    {
+        inventoryButton.gameObject.SetActive(false);
+        background.gameObject.SetActive(true);
+        recyclingSystem.gameObject.SetActive(true);
     }
 }

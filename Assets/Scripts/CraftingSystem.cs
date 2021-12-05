@@ -53,9 +53,9 @@ public class CraftingSystem : MonoBehaviour
         foreach (var craftingSlot in craftingSlots)
         {
             if (craftingSlot.Item)
-                result += craftingSlot.Item.itemData.Name; 
+                result += craftingSlot.Item.itemData.Name + ";"; 
             else
-                result += "0";
+                result += "0;";
 
         }
         Debug.Log(result);

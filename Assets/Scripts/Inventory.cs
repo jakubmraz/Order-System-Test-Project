@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class Inventory : MonoBehaviour
 {
@@ -38,15 +39,24 @@ public class Inventory : MonoBehaviour
         string[] splitString = inventoryString.Split(';');
         int i = 0;
 
+        bool isBroken = false;
         foreach (var itemSlot in ItemSlots)
         {
             if (splitString[i] != "0")
             {
+                if (splitString[i].Contains("!"))
+                {
+                    splitString[i] = splitString[i].Replace("!", "");
+                    isBroken = true;
+                }
                 itemSlot.Item = Instantiate(ItemPrefab, itemSlot.transform).GetComponent<Item>();
                 itemSlot.Item.InitializeItem(splitString[i]);
+                if(isBroken)
+                    itemSlot.Item.BreakItem();
             }
 
             i++;
+            isBroken = false;
         }
     }
 
@@ -57,7 +67,12 @@ public class Inventory : MonoBehaviour
         foreach (var itemSlot in ItemSlots)
         {
             if (itemSlot.Item)
+            {
+                if (itemSlot.Item.IsBroken)
+                    inventoryString += "!";
                 inventoryString += itemSlot.Item.itemData.Name;
+            }
+                
             else
                 inventoryString += 0;
 
@@ -108,5 +123,17 @@ public class Inventory : MonoBehaviour
         }
 
         return true;
+    }
+
+    public void AddRandomBrokenItem()
+    {
+        Items items = new Items();
+        int randomIndex = Random.Range(0, items.ItemList.Count - 1);
+        string randomItem = items.ItemList[randomIndex].Name;
+
+        ItemSlot emptySlot = FindFirstEmptySlot();
+        emptySlot.Item = Instantiate(ItemPrefab, emptySlot.transform).GetComponent<Item>();
+        emptySlot.Item.InitializeItem(randomItem);
+        emptySlot.Item.BreakItem();
     }
 }

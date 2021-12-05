@@ -16,6 +16,7 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     private CraftingSystem craftingSystem;
     private Inventory inventory;
     private GarbageCollection garbageCollection;
+    private Item item;
 
     private ItemSlot lastSlot;
 
@@ -26,6 +27,7 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         craftingSystem = GetComponentInParent<CraftingSystem>();
         inventory = GetComponentInParent<Inventory>();
         garbageCollection = GetComponentInParent<GarbageCollection>();
+        item = GetComponent<Item>();
     }
 
     /// <summary>
@@ -84,7 +86,7 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
             if (slot)
             {
                 // We should check if we can place ourselves​ there.
-                if (slot.Item == null && !slot.IsResultSlot && !slot.IsCollectionSlot)
+                if (slot.Item == null && !slot.IsResultSlot && !slot.IsCollectionSlot && (!slot.IsRecycleSlot || (item.itemData.Recipe != "000000000" && item.IsBroken)))
                 {
                     // Swapping references.
                     currentSlot.Item = null;
@@ -93,9 +95,8 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
                     craftingSystem.Craft();
                 }
 
-                else if (slot.Item != null && !slot.IsResultSlot && !slot.IsCollectionSlot && !currentSlot.IsCollectionSlot && !currentSlot.IsResultSlot)
+                else if (slot.Item != null && !slot.IsResultSlot && !slot.IsCollectionSlot && !currentSlot.IsCollectionSlot && !currentSlot.IsResultSlot && (!slot.IsRecycleSlot || (item.itemData.Recipe != "000000000" && item.IsBroken)))
                 {
-                    Debug.Log("qwert");
                     currentSlot.Item = slot.Item;
                     currentSlot.Item.transform.SetParent(currentSlot.transform);
                     currentSlot.Item.transform.localPosition = Vector3.zero;
@@ -121,6 +122,18 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         if (lastSlot.IsCollectionSlot)
         {
             garbageCollection.RespawnItem();
+        }
+
+        if (lastSlot.IsRecycleSlot)
+        {
+            RecyclingSystem recyclingSystem = FindObjectOfType<RecyclingSystem>();
+            recyclingSystem.DisableRecycleButton();
+        }
+
+        if (currentSlot.IsRecycleSlot)
+        {
+            RecyclingSystem recyclingSystem = FindObjectOfType<RecyclingSystem>();
+            recyclingSystem.EnableRecycleButton();
         }
 
         // Changing parent back to slot.

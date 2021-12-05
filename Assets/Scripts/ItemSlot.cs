@@ -14,6 +14,7 @@ public class ItemSlot : MonoBehaviour
     public bool IsCraftingSlot;
     public bool IsResultSlot;
     public bool IsCollectionSlot;
+    public bool IsRecycleSlot;
 
     void Awake()
     {
