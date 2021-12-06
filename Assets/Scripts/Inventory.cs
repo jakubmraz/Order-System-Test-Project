@@ -7,19 +7,39 @@ using Random = UnityEngine.Random;
 
 public class Inventory : MonoBehaviour
 {
-    public List<ItemSlot> ItemSlots;
     public Item ItemPrefab;
     private SavingLoading savingLoading;
+
+    private List<ItemSlot> itemSlots;
 
     void Awake()
     {
         savingLoading = GetComponent<SavingLoading>();
+        //Called from UI on startup now
+        //LoadSavedInventory();
+    }
+
+    public void AssignNewInventorySlots(List<ItemSlot> itemSlots)
+    {
+        this.itemSlots = itemSlots;
         LoadSavedInventory();
+    }
+
+    public void FlushInventory()
+    {
+        foreach (var slot in itemSlots)
+        {
+            if (slot.Item)
+            {
+                Destroy(slot.Item.gameObject);
+                slot.Item = null;
+            }
+        }
     }
 
     public ItemSlot FindFirstEmptySlot()
     {
-        foreach (var itemSlot in ItemSlots)
+        foreach (var itemSlot in itemSlots)
         {
             if (!itemSlot.Item)
                 return itemSlot;
@@ -30,6 +50,7 @@ public class Inventory : MonoBehaviour
 
     public void LoadSavedInventory()
     {
+        FlushInventory();
         string inventoryString = savingLoading.LoadInventoryData();
         FillInventory(inventoryString);
     }
@@ -40,7 +61,7 @@ public class Inventory : MonoBehaviour
         int i = 0;
 
         bool isBroken = false;
-        foreach (var itemSlot in ItemSlots)
+        foreach (var itemSlot in itemSlots)
         {
             if (splitString[i] != "0")
             {
@@ -64,7 +85,7 @@ public class Inventory : MonoBehaviour
     {
         string inventoryString = "";
 
-        foreach (var itemSlot in ItemSlots)
+        foreach (var itemSlot in itemSlots)
         {
             if (itemSlot.Item)
             {
@@ -84,7 +105,7 @@ public class Inventory : MonoBehaviour
 
     public bool CheckForItem(string itemName)
     {
-        foreach (var itemSlot in ItemSlots)
+        foreach (var itemSlot in itemSlots)
         {
             if(itemSlot.Item)
                 if (itemSlot.Item.itemData.Name == itemName)
@@ -98,7 +119,7 @@ public class Inventory : MonoBehaviour
     {
         int itemCount = 0;
 
-        foreach (var itemSlot in ItemSlots)
+        foreach (var itemSlot in itemSlots)
         {
             if (itemSlot.Item)
                 if (itemSlot.Item.itemData.Name == itemName)
@@ -112,7 +133,7 @@ public class Inventory : MonoBehaviour
 
     public bool RemoveItem(string itemName)
     {
-        foreach (var itemSlot in ItemSlots)
+        foreach (var itemSlot in itemSlots)
         {
             if (itemSlot.Item)
                 if (itemSlot.Item.itemData.Name == itemName)

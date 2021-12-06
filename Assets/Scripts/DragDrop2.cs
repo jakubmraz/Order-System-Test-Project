@@ -92,7 +92,8 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
                     currentSlot.Item = null;
                     currentSlot = slot;
                     currentSlot.Item = this.GetComponent<Item>();
-                    craftingSystem.Craft();
+                    if(craftingSystem)
+                        craftingSystem.Craft();
                 }
 
                 else if (slot.Item != null && !slot.IsResultSlot && !slot.IsCollectionSlot && !currentSlot.IsCollectionSlot && !currentSlot.IsResultSlot && (!slot.IsRecycleSlot || (item.itemData.Recipe != "000000000" && item.IsBroken)))
@@ -104,7 +105,8 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
                     drag.currentSlot = currentSlot;
                     currentSlot = slot;
                     currentSlot.Item = this.GetComponent<Item>();
-                    craftingSystem.Craft();
+                    if (craftingSystem)
+                        craftingSystem.Craft();
                 }
                 // In either cases we should break check loop.
                 break;

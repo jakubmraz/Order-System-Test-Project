@@ -16,7 +16,7 @@ public class CraftingSystem : MonoBehaviour
 
     [SerializeField] public ItemSlot resultSlot;
 
-    public List<ItemSlot> craftingSlots;
+    [HideInInspector] public List<ItemSlot> craftingSlots;
     private Items items;
 
     public bool CraftingActive;

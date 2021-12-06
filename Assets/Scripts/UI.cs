@@ -11,7 +11,9 @@ public class UI : MonoBehaviour
     [SerializeField] private RectTransform craftingGrid;
     [SerializeField] private Button inventoryButton;
 
+    [SerializeField] private RectTransform nakedInventory;
     [SerializeField] private CraftingSystem craftingSystem;
+    [SerializeField] private RectTransform garbageCollectionScreen;
     [SerializeField] private GarbageCollection garbageCollection;
     [SerializeField] private RectTransform recyclingSystem;
 
@@ -20,20 +22,31 @@ public class UI : MonoBehaviour
 
     [SerializeField] private OrderScreen orderScreen;
 
+    public List<ItemSlot> InventoryScreenItemSlots;
+    public List<ItemSlot> CraftingScreenItemSlots;
+    public List<ItemSlot> CollectionScreenItemSlots;
+    public List<ItemSlot> RecyclingScreenItemSlots;
+
     private SavingLoading savingLoading;
     private RealTimeEffects realTimeEffects;
+    private Inventory inventory;
 
     void Awake()
     {
         savingLoading = GetComponent<SavingLoading>();
         realTimeEffects = FindObjectOfType<RealTimeEffects>();
+        inventory = GetComponentInParent<Inventory>();
+        inventory.AssignNewInventorySlots(InventoryScreenItemSlots);
+        inventory.LoadSavedInventory();
     }
 
     public void ShowCollectionScreen()
     {
         inventoryButton.gameObject.SetActive(false);
         background.gameObject.SetActive(true);
+        garbageCollectionScreen.gameObject.SetActive(true);
         garbageCollection.gameObject.SetActive(true);
+        inventory.AssignNewInventorySlots(CollectionScreenItemSlots);
         garbageCollection.SpawnItem();
     }
 
@@ -42,6 +55,7 @@ public class UI : MonoBehaviour
         inventoryButton.gameObject.SetActive(false);
         background.gameObject.SetActive(true);
         craftingGrid.gameObject.SetActive(true);
+        inventory.AssignNewInventorySlots(CraftingScreenItemSlots);
         craftingSystem.CraftingActive = true;
     }
 
@@ -83,16 +97,20 @@ public class UI : MonoBehaviour
 
     public void OpenInventory()
     {
+        inventory.AssignNewInventorySlots(InventoryScreenItemSlots);
         inventoryButton.gameObject.SetActive(false);
         background.gameObject.SetActive(true);
+        nakedInventory.gameObject.SetActive(true);
     }
 
     private void CloseAll()
     {
         background.gameObject.SetActive(false);
+        nakedInventory.gameObject.SetActive(false);
         craftingGrid.gameObject.SetActive(false);
         inventoryButton.gameObject.SetActive(true);
         garbageCollection.gameObject.SetActive(false);
+        garbageCollectionScreen.gameObject.SetActive(false);
         recyclingSystem.gameObject.SetActive(false);
     }
 
@@ -117,5 +135,6 @@ public class UI : MonoBehaviour
         inventoryButton.gameObject.SetActive(false);
         background.gameObject.SetActive(true);
         recyclingSystem.gameObject.SetActive(true);
+        inventory.AssignNewInventorySlots(RecyclingScreenItemSlots);
     }
 }
