@@ -7,6 +7,9 @@ using Random = UnityEngine.Random;
 
 public class Inventory : MonoBehaviour
 {
+    //Make sure to update the UI script in the editor accordingly
+    public int NumberOfInventorySlots;
+
     public Item ItemPrefab;
     private SavingLoading savingLoading;
 
@@ -58,10 +61,9 @@ public class Inventory : MonoBehaviour
     private void FillInventory(string inventoryString)
     {
         string[] splitString = inventoryString.Split(';');
-        int i = 0;
 
         bool isBroken = false;
-        foreach (var itemSlot in itemSlots)
+        for (int i = 0; i < NumberOfInventorySlots; i++)
         {
             if (splitString[i] != "0")
             {
@@ -70,13 +72,11 @@ public class Inventory : MonoBehaviour
                     splitString[i] = splitString[i].Replace("!", "");
                     isBroken = true;
                 }
-                itemSlot.Item = Instantiate(ItemPrefab, itemSlot.transform).GetComponent<Item>();
-                itemSlot.Item.InitializeItem(splitString[i]);
+                itemSlots[i].Item = Instantiate(ItemPrefab, itemSlots[i].transform).GetComponent<Item>();
+                itemSlots[i].Item.InitializeItem(splitString[i]);
                 if(isBroken)
-                    itemSlot.Item.BreakItem();
+                    itemSlots[i].Item.BreakItem();
             }
-
-            i++;
             isBroken = false;
         }
     }
@@ -156,5 +156,6 @@ public class Inventory : MonoBehaviour
         emptySlot.Item = Instantiate(ItemPrefab, emptySlot.transform).GetComponent<Item>();
         emptySlot.Item.InitializeItem(randomItem);
         emptySlot.Item.BreakItem();
+        savingLoading.SaveInventoryData();
     }
 }
