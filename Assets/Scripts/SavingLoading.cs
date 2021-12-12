@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
 public class SavingLoading : MonoBehaviour
@@ -12,6 +14,7 @@ public class SavingLoading : MonoBehaviour
     void Awake()
     {
         inventory = GetComponent<Inventory>();
+        LoadDataFromFile();
     }
 
     public void SaveInventoryData()
@@ -21,6 +24,7 @@ public class SavingLoading : MonoBehaviour
         PlayerPrefs.Save();
         Debug.Log("Saved!," + inventoryString);
         SaveTime();
+        SaveDataToFile();
     }
 
     public string LoadInventoryData()
@@ -38,6 +42,7 @@ public class SavingLoading : MonoBehaviour
         PlayerPrefs.Save();
         Debug.Log("Saved!, " + timeDivisor);
         SaveTime();
+        SaveDataToFile();
     }
 
     public int LoadCollectionData()
@@ -61,6 +66,7 @@ public class SavingLoading : MonoBehaviour
         PlayerPrefs.Save();
         Debug.Log("Saved!, " + containerString);
         SaveTime();
+        SaveDataToFile();
     }
 
     public void LoadContainerData(List<GarbageContainer> containers)
@@ -107,5 +113,48 @@ public class SavingLoading : MonoBehaviour
         int minuteDifference = (DateTime.Now - lastTime).Minutes;
         Debug.Log(minuteDifference);
         return minuteDifference;
+    }
+
+    public void SaveDataToFile()
+    {
+        string destination = Application.persistentDataPath + "/save.dat";
+        FileStream file;
+
+        if (File.Exists(destination)) file = File.OpenWrite(destination);
+        else file = File.Create(destination);
+
+        RealTimeEffects effects = FindObjectOfType<RealTimeEffects>();
+        List<GarbageContainer> containers = effects.GarbageContainers;
+
+        SaveData data = new SaveData(LoadInventoryData(), LoadCollectionData(), PlayerPrefs.GetString("Containers"), PlayerPrefs.GetString("Time"));
+        BinaryFormatter bf = new BinaryFormatter();
+        bf.Serialize(file, data);
+        file.Close();
+    }
+
+    public void LoadDataFromFile()
+    {
+        string destination = Application.persistentDataPath + "/save.dat";
+        FileStream file;
+
+        if (File.Exists(destination)) file = File.OpenRead(destination);
+        else
+        {
+            Debug.LogError("File not found");
+            return;
+        }
+
+        BinaryFormatter bf = new BinaryFormatter();
+        SaveData data = (SaveData)bf.Deserialize(file);
+        file.Close();
+
+        Debug.Log("Loaded data from file:\nInventory: " + data.InventoryData + "\nTimeDivisor: " + data.CollectionData + "\nContainers: " + data.ContainerData + "\nTime: " + data.TimeData);
+
+        PlayerPrefs.SetString("Inventory", data.InventoryData);
+        PlayerPrefs.SetInt("TimeDivisor", data.CollectionData);
+        PlayerPrefs.SetString("Containers", data.ContainerData);
+        PlayerPrefs.SetString("Time", data.TimeData);
+
+        PlayerPrefs.Save();
     }
 }
