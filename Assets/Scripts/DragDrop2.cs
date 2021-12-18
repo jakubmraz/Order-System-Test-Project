@@ -4,8 +4,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler
 {
+    private float shortClickThreshold = 1f;
+    private bool shortClick;
+
     // Reference to current item slot.
     public ItemSlot currentSlot;
     // Reference to the canvas.
@@ -37,6 +40,9 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     /// <param name="eventData">Event data.</param>
     public void OnBeginDrag(PointerEventData eventData)
     {
+        StopCoroutine(ShortClickCoroutine());
+        shortClick = false;
+
         lastSlot = currentSlot;
 
         if (currentSlot.IsResultSlot)
@@ -142,5 +148,28 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         transform.SetParent(currentSlot.transform);
         // And centering item position.
         transform.localPosition = Vector3.zero;
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        if (shortClick)
+        {
+            ItemTooltip.Instance.ShowTooltip(item);
+        }
+
+        StopCoroutine(ShortClickCoroutine());
+        shortClick = false;
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        StartCoroutine(ShortClickCoroutine());
+    }
+
+    private IEnumerator ShortClickCoroutine()
+    {
+        shortClick = true;
+        yield return new WaitForSeconds(shortClickThreshold);
+        shortClick = false;
     }
 }
