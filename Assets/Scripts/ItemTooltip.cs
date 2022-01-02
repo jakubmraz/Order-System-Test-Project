@@ -34,9 +34,23 @@ public class ItemTooltip : MonoBehaviour
         itemValueTMP.text = item.itemData.Value + " kr";
 
         transform.position = new Vector3(item.transform.position.x, item.transform.position.y + backgroundPanel.rect.height*1.3f, item.transform.position.z);
-        Debug.Log(transform.position.x + backgroundPanel.rect.width + " " + Screen.width + " " + CheckIfWithinScreenBoundaries());
-        if(!CheckIfWithinScreenBoundaries())
-            transform.position = new Vector3(item.transform.position.x - backgroundPanel.rect.width, item.transform.position.y + backgroundPanel.rect.height * 1.3f, item.transform.position.z);
+        //Debug.Log(GetTooltipPosition());
+        //Debug.Log(CheckIfWithinScreenBoundaries());
+        switch (CheckIfWithinScreenBoundaries())
+        {
+            case "":
+                break;
+            case "up":
+                transform.position = new Vector3(item.transform.position.x, item.transform.position.y - backgroundPanel.rect.height * 0.3f, item.transform.position.z);
+                break;
+            case "down":
+                break;
+            case "left":
+                break;
+            case "right":
+                transform.position = new Vector3(item.transform.position.x - backgroundPanel.rect.width, item.transform.position.y + backgroundPanel.rect.height * 1.3f, item.transform.position.z);
+                break;
+        }
     }
 
     public void HideTooltip()
@@ -44,12 +58,20 @@ public class ItemTooltip : MonoBehaviour
         backgroundPanel.gameObject.SetActive(false);
     }
 
-    private bool CheckIfWithinScreenBoundaries()
+    private string CheckIfWithinScreenBoundaries()
     {
-        if (transform.position.x + backgroundPanel.rect.width > Screen.width) return false;
-        if (transform.position.x < 0) return false;
-        if (transform.position.y < 0) return false;
-        if (transform.position.y + backgroundPanel.rect.height > Screen.height) return false;
-        return true;
+        Vector3 position = GetTooltipPosition();
+
+        if (position.x + backgroundPanel.rect.width > Screen.width) return "right";
+        if (position.x < 0) return "left";
+        if (position.y > 0) return "up";
+        if (position.y - backgroundPanel.rect.height < -Screen.height) return "down";
+        return "";
+    }
+
+    private Vector3 GetTooltipPosition()
+    {
+        RectTransform canvas = (RectTransform) transform.parent;
+        return new Vector3(transform.localPosition.x + canvas.rect.width/2, transform.localPosition.y - canvas.rect.height/2, 0);
     }
 }

@@ -8,11 +8,15 @@ using UnityEngine;
 
 public class SavingLoading : MonoBehaviour
 {
+    public static SavingLoading Instance { get; private set; }
+
     private string inventoryString = "0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;0;";
     private Inventory inventory;
 
     void Awake()
     {
+        Instance = this;
+
         inventory = GetComponent<Inventory>();
         LoadDataFromFile();
     }

@@ -51,13 +51,13 @@ public class Order : MonoBehaviour
     {
         deliverButton.gameObject.SetActive(false);
 
-        if (inventory.CheckForItem(desiredItem1))
+        if (inventory.CheckForNonBrokenItem(desiredItem1))
             if (desiredItem1 == desiredItem2)
             {
                 if (inventory.CheckForItemDuplicate(desiredItem2))
                     deliverButton.gameObject.SetActive(true);
             }
-            else if(desiredItem2 == "" || inventory.CheckForItem(desiredItem2))
+            else if(desiredItem2 == "" || inventory.CheckForNonBrokenItem(desiredItem2))
                 deliverButton.gameObject.SetActive(true);
     }
 
@@ -73,6 +73,8 @@ public class Order : MonoBehaviour
             yield return new WaitUntil(() => inventory.RemoveItem(desiredItem2));
 
         Debug.Log(inventory.CheckForItem(desiredItem1));
+
+        SavingLoading.Instance.SaveInventoryData();
 
         OrderScreen orderScreen = GetComponentInParent<OrderScreen>();
         orderScreen.OnOrderCompleted();

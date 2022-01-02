@@ -115,6 +115,19 @@ public class Inventory : MonoBehaviour
         return false;
     }
 
+    public bool CheckForNonBrokenItem(string itemName)
+    {
+        foreach (var itemSlot in itemSlots)
+        {
+            if (itemSlot.Item)
+                if (itemSlot.Item.itemData.Name == itemName && !itemSlot.Item.IsBroken)
+                    return true;
+        }
+
+        return false;
+    }
+
+    //Does not check for broken items since the only usage of this method is in the order system, create a new one without the broken check if needed
     public bool CheckForItemDuplicate(string itemName)
     {
         int itemCount = 0;
@@ -122,7 +135,7 @@ public class Inventory : MonoBehaviour
         foreach (var itemSlot in itemSlots)
         {
             if (itemSlot.Item)
-                if (itemSlot.Item.itemData.Name == itemName)
+                if (itemSlot.Item.itemData.Name == itemName && !itemSlot.Item.IsBroken)
                     itemCount++;
         }
 
