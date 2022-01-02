@@ -132,16 +132,25 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
             garbageCollection.RespawnItem();
         }
 
-        if (lastSlot.IsRecycleSlot)
-        {
-            RecyclingSystem recyclingSystem = FindObjectOfType<RecyclingSystem>();
-            recyclingSystem.DisableRecycleButton();
-        }
+        RecyclingSystem recyclingSystem;
 
-        if (currentSlot.IsRecycleSlot)
+        try
         {
-            RecyclingSystem recyclingSystem = FindObjectOfType<RecyclingSystem>();
-            recyclingSystem.EnableRecycleButton();
+            recyclingSystem = FindObjectOfType<RecyclingSystem>();
+
+            if (!recyclingSystem.CheckIfResultSlotsEmpty())
+            {
+                recyclingSystem.DisableRecycleButton();
+            }
+            else if(recyclingSystem.CheckIfEntrySlotFilled())
+            {
+                recyclingSystem.EnableRecycleButton();
+            }
+
+        }
+        catch
+        {
+            Debug.Log("Recycling system script not found.");
         }
 
         // Changing parent back to slot.

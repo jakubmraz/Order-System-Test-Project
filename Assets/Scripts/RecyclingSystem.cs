@@ -38,6 +38,9 @@ public class RecyclingSystem : MonoBehaviour
 
     public void Recycle()
     {
+        if (entrySlot.Item == null)
+            return;
+
         Item itemToBeRecycled = entrySlot.Item;
         string recipe = items.ItemList.FirstOrDefault(item => itemToBeRecycled.itemData.Name == item.Name).Recipe;
 
@@ -66,6 +69,23 @@ public class RecyclingSystem : MonoBehaviour
         }
 
         Destroy(entrySlot.Item.gameObject);
+    }
+
+    public bool CheckIfResultSlotsEmpty()
+    {
+        foreach (var slot in resultSlots)
+        {
+            if (slot.Item != null)
+                return false;
+        }
+
+        return true;
+    }
+
+    public bool CheckIfEntrySlotFilled()
+    {
+        if (entrySlot.Item == null) return false;
+        else return true;
     }
 
     public void EnableRecycleButton()
