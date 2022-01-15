@@ -62,10 +62,23 @@ public class Inventory : MonoBehaviour
     {
         string[] splitString = inventoryString.Split(';');
 
+        //-1 because the code counts the "" after the last ; as another member of the array
+        int slotLoadDifference = Math.Abs(splitString.Length - 1 - NumberOfInventorySlots);
+
+        if (slotLoadDifference > 0)
+        {
+            for (int i = 0; i < slotLoadDifference; i++)
+            {
+                inventoryString += "0;";
+            }
+
+            splitString = inventoryString.Split(';');
+        }
+
         bool isBroken = false;
         for (int i = 0; i < NumberOfInventorySlots; i++)
         {
-            if (splitString[i] != "0")
+            if (splitString[i] != "0" && splitString[i] != "")
             {
                 if (splitString[i].Contains("!"))
                 {
@@ -79,6 +92,8 @@ public class Inventory : MonoBehaviour
             }
             isBroken = false;
         }
+
+        
     }
 
     internal string GetInventoryString()
