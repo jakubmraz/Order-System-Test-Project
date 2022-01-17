@@ -21,6 +21,23 @@ public class SavingLoading : MonoBehaviour
         LoadDataFromFile();
     }
 
+    public void SaveOrderData()
+    {
+        string orderString = OrderSystem.Instance.GetOrderString();
+        PlayerPrefs.SetString("Orders", orderString);
+        PlayerPrefs.Save();
+        SaveTime();
+        SaveDataToFile();
+    }
+
+    public string LoadOrderData()
+    {
+        string orderString = "";
+        if (PlayerPrefs.HasKey("Orders"))
+            orderString = PlayerPrefs.GetString("Orders");
+        return orderString;
+    }
+
     public void SaveInventoryData()
     {
         inventoryString = inventory.GetInventoryString();
@@ -130,7 +147,7 @@ public class SavingLoading : MonoBehaviour
         RealTimeEffects effects = FindObjectOfType<RealTimeEffects>();
         List<GarbageContainer> containers = effects.GarbageContainers;
 
-        SaveData data = new SaveData(LoadInventoryData(), LoadCollectionData(), PlayerPrefs.GetString("Containers"), PlayerPrefs.GetString("Time"));
+        SaveData data = new SaveData(LoadInventoryData(), LoadCollectionData(), PlayerPrefs.GetString("Containers"), PlayerPrefs.GetString("Time"), LoadOrderData());
         BinaryFormatter bf = new BinaryFormatter();
         bf.Serialize(file, data);
         file.Close();
@@ -152,12 +169,13 @@ public class SavingLoading : MonoBehaviour
         SaveData data = (SaveData)bf.Deserialize(file);
         file.Close();
 
-        Debug.Log("Loaded data from file:\nInventory: " + data.InventoryData + "\nTimeDivisor: " + data.CollectionData + "\nContainers: " + data.ContainerData + "\nTime: " + data.TimeData);
+        Debug.Log("Loaded data from file:\nInventory: " + data.InventoryData + "\nTimeDivisor: " + data.CollectionData + "\nContainers: " + data.ContainerData + "\nTime: " + data.TimeData + "\nOrders: " + data.OrderData);
 
         PlayerPrefs.SetString("Inventory", data.InventoryData);
         PlayerPrefs.SetInt("TimeDivisor", data.CollectionData);
         PlayerPrefs.SetString("Containers", data.ContainerData);
         PlayerPrefs.SetString("Time", data.TimeData);
+        PlayerPrefs.SetString("Orders", data.OrderData);
 
         PlayerPrefs.Save();
     }

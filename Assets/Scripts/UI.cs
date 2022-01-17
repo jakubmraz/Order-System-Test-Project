@@ -127,7 +127,7 @@ public class UI : MonoBehaviour
     public void ShowOrderScreen()
     {
         orderScreen.gameObject.SetActive(true);
-        orderScreen.OnOrderCompleted();
+        OrderSystem.Instance.CheckPlayerInventory();
     }
 
     public void ShowRecyclingScreen()

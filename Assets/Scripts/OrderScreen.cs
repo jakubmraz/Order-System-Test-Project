@@ -8,33 +8,24 @@ public class OrderScreen : MonoBehaviour
 
     public Order orderPrefab;
 
-    void Awake()
+    public Order[] CreateOrderObjects()
     {
-        FillInOrders();
-    }
+        Order[] ordersCreated = new Order[9];
+        int i = 0;
 
-    void FillInOrders()
-    {
         foreach (var orderHolder in orderHolders)
         {
             Order newOrder = Instantiate(orderPrefab, orderHolder);
+            ordersCreated[i] = newOrder;
+            i++;
         }
-    }
 
-    public void OnOrderCompleted()
-    {
-        Order order;
-
-        foreach (var orderHolder in orderHolders)
-        {
-            order = orderHolder.GetComponentInChildren<Order>();
-            if(order)
-                order.CheckPlayerInventory();
-        }
+        return ordersCreated;
     }
 
     public void CloseOrderScreen()
     {
+        SavingLoading.Instance.SaveOrderData();
         gameObject.SetActive(false);
     }
 }

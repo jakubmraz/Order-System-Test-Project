@@ -7,6 +7,8 @@ using Random = UnityEngine.Random;
 
 public class Inventory : MonoBehaviour
 {
+    public static Inventory Instance { get; private set; }
+
     //Make sure to update the UI script in the editor accordingly
     public int NumberOfInventorySlots;
 
@@ -17,6 +19,7 @@ public class Inventory : MonoBehaviour
 
     void Awake()
     {
+        Instance = this;
         savingLoading = GetComponent<SavingLoading>();
         //Called from UI on startup now
         //LoadSavedInventory();

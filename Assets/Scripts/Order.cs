@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -11,21 +12,39 @@ public class Order : MonoBehaviour
 {
     [SerializeField] private Image desiredItem1Image;
     [SerializeField] private Image desiredItem2Image;
-    [SerializeField] private Button deliverButton;
+    [SerializeField] public Button deliverButton;
+    [SerializeField] private RectTransform activeOrderUI;
+    [SerializeField] private TextMeshProUGUI cooldownTimerTMP;
 
-    private string desiredItem1;
-    private string desiredItem2;
+    public string desiredItem1;
+    public string desiredItem2;
 
-    private Inventory inventory;
+    public bool completed;
+    private DateTime completedTime;
 
     void Awake()
     {
-        inventory = FindObjectOfType<Inventory>();
-        PickDesiredItems();
-        CheckPlayerInventory();
+        
     }
 
-    void PickDesiredItems()
+    void Update()
+    {
+        if (completed)
+        {
+            TimeSpan minutesBetween = DateTime.Now - completedTime;
+            double minutesLeftDouble = OrderSystem.OrderCooldown - minutesBetween.TotalMinutes;
+            int minutesLeftWhole = Convert.ToInt32(minutesLeftDouble);
+            TimeSpan timeLeft = TimeSpan.FromMinutes(minutesLeftWhole);
+            cooldownTimerTMP.text = timeLeft.Hours + ":" + timeLeft.Minutes;
+
+            if (minutesLeftWhole <= 0)
+            {
+                GenerateNewOrder();
+            }
+        }
+    }
+
+    public void PickDesiredItems()
     {
         Items items = new Items();
         int selection = Random.Range(0, items.ItemList.Count);
@@ -47,38 +66,71 @@ public class Order : MonoBehaviour
         }
     }
 
-    public void CheckPlayerInventory()
-    {
-        deliverButton.gameObject.SetActive(false);
-
-        if (inventory.CheckForNonBrokenItem(desiredItem1))
-            if (desiredItem1 == desiredItem2)
-            {
-                if (inventory.CheckForItemDuplicate(desiredItem2))
-                    deliverButton.gameObject.SetActive(true);
-            }
-            else if(desiredItem2 == "" || inventory.CheckForNonBrokenItem(desiredItem2))
-                deliverButton.gameObject.SetActive(true);
-    }
-
     public void Satisfy()
-    {;
+    {
         StartCoroutine(SatisfyCoroutine());
     }
 
     IEnumerator SatisfyCoroutine()
     {
-        yield return new WaitUntil(() => inventory.RemoveItem(desiredItem1));
+        yield return new WaitUntil(() => Inventory.Instance.RemoveItem(desiredItem1));
         if (desiredItem2 != "")
-            yield return new WaitUntil(() => inventory.RemoveItem(desiredItem2));
-
-        Debug.Log(inventory.CheckForItem(desiredItem1));
+            yield return new WaitUntil(() => Inventory.Instance.RemoveItem(desiredItem2));
 
         SavingLoading.Instance.SaveInventoryData();
 
-        OrderScreen orderScreen = GetComponentInParent<OrderScreen>();
-        orderScreen.OnOrderCompleted();
+        OrderSystem.Instance.CheckPlayerInventory();
 
-        Destroy(gameObject);
+        completed = true;
+        activeOrderUI.gameObject.SetActive(false);
+        cooldownTimerTMP.gameObject.SetActive(true);
+
+        completedTime = DateTime.Now;
+    }
+
+    void GenerateNewOrder()
+    {
+        completed = false;
+        cooldownTimerTMP.gameObject.SetActive(false);
+        activeOrderUI.gameObject.SetActive(true);
+        PickDesiredItems();
+
+        OrderSystem.Instance.CheckPlayerInventory();
+    }
+
+    public void GetOrderData(out string order1, out string order2, out bool completed, out DateTime timeCompleted)
+    {
+
+        order1 = desiredItem1;
+        order2 = desiredItem2;
+        completed = this.completed;
+        timeCompleted = completedTime;
+    }
+
+    public void FillLoadedData(string order1, string order2, bool completed, DateTime timeCompleted)
+    {
+        desiredItem1 = order1;
+        desiredItem2 = order2;
+        this.completed = completed;
+        completedTime = timeCompleted;
+
+        Items items = new Items();
+        desiredItem1Image.sprite = items.ItemList.FirstOrDefault(item => item.Name == desiredItem1).Sprite;
+        if (desiredItem2 != "")
+        {
+            desiredItem2Image.sprite = items.ItemList.FirstOrDefault(item => item.Name == desiredItem2).Sprite;
+        }
+        else
+        {
+            Color tempColour = desiredItem2Image.color;
+            tempColour.a = 0;
+            desiredItem2Image.color = tempColour;
+        }
+
+        if (completed)
+        {
+            activeOrderUI.gameObject.SetActive(false);
+            cooldownTimerTMP.gameObject.SetActive(true);
+        }
     }
 }
