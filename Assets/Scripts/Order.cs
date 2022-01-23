@@ -20,6 +20,7 @@ public class Order : MonoBehaviour
     public string desiredItem2;
 
     public bool completed;
+    public bool skipped;
     private DateTime completedTime;
 
     void Awake()
@@ -33,6 +34,7 @@ public class Order : MonoBehaviour
         {
             TimeSpan minutesBetween = DateTime.Now - completedTime;
             double minutesLeftDouble = OrderSystem.OrderCooldown - minutesBetween.TotalMinutes;
+            if (skipped) minutesLeftDouble = OrderSystem.OrderCooldownOnSkip - minutesBetween.TotalMinutes;
             int minutesLeftWhole = Convert.ToInt32(minutesLeftDouble);
             TimeSpan timeLeft = TimeSpan.FromMinutes(minutesLeftWhole);
             cooldownTimerTMP.text = timeLeft.Hours + ":" + timeLeft.Minutes;
@@ -88,9 +90,20 @@ public class Order : MonoBehaviour
         completedTime = DateTime.Now;
     }
 
+    public void SkipOrder()
+    {
+        completed = true;
+        skipped = true;
+        activeOrderUI.gameObject.SetActive(false);
+        cooldownTimerTMP.gameObject.SetActive(true);
+
+        completedTime = DateTime.Now;
+    }
+
     void GenerateNewOrder()
     {
         completed = false;
+        skipped = false;
         cooldownTimerTMP.gameObject.SetActive(false);
         activeOrderUI.gameObject.SetActive(true);
         PickDesiredItems();
@@ -98,20 +111,22 @@ public class Order : MonoBehaviour
         OrderSystem.Instance.CheckPlayerInventory();
     }
 
-    public void GetOrderData(out string order1, out string order2, out bool completed, out DateTime timeCompleted)
+    public void GetOrderData(out string order1, out string order2, out bool completed, out bool skipped, out DateTime timeCompleted)
     {
 
         order1 = desiredItem1;
         order2 = desiredItem2;
         completed = this.completed;
+        skipped = this.skipped;
         timeCompleted = completedTime;
     }
 
-    public void FillLoadedData(string order1, string order2, bool completed, DateTime timeCompleted)
+    public void FillLoadedData(string order1, string order2, bool completed, DateTime timeCompleted, bool skipped)
     {
         desiredItem1 = order1;
         desiredItem2 = order2;
         this.completed = completed;
+        this.skipped = skipped;
         completedTime = timeCompleted;
 
         Items items = new Items();

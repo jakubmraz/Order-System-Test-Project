@@ -63,8 +63,8 @@ public class OrderSystem : MonoBehaviour
 
         foreach (Order order in orders)
         {
-            order.GetOrderData(out string order1, out string order2, out bool completed, out DateTime timeCompleted);
-            orderString += order1 + "#" + order2 + "#" + completed + "#" + timeCompleted + ";";
+            order.GetOrderData(out string order1, out string order2, out bool completed, out bool skipped, out DateTime timeCompleted);
+            orderString += order1 + "#" + order2 + "#" + completed + "#" + timeCompleted + "#" + skipped + ";";
         }
 
         return orderString;
@@ -80,7 +80,16 @@ public class OrderSystem : MonoBehaviour
         {
             string[] splitData = splitString[i].Split('#');
             Debug.Log(splitData[0]);
-            order.FillLoadedData(splitData[0], splitData[1], bool.Parse(splitData[2]), DateTime.Parse(splitData[3]));
+            try
+            {
+                order.FillLoadedData(splitData[0], splitData[1], bool.Parse(splitData[2]), DateTime.Parse(splitData[3]),
+                    bool.Parse(splitData[4]));
+            }
+            catch
+            {
+                order.FillLoadedData(splitData[0], splitData[1], bool.Parse(splitData[2]), DateTime.Parse(splitData[3]), false);
+            }
+            
             i++;
         }
     }
