@@ -11,8 +11,7 @@ public class Item : MonoBehaviour
 
     public void InitializeItem(string item)
     {
-        Items items = new Items();
-        itemData = items.GetItemData(item);
+        itemData = ItemDataAccessor.Instance.GetItemData(item);
         itemImage = GetComponent<Image>();
         itemImage.sprite = itemData.Sprite;
     }

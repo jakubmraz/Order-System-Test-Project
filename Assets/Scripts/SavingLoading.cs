@@ -57,60 +57,94 @@ public class SavingLoading : MonoBehaviour
         return inventoryString;
     }
 
-    public void SaveCollectionData(int timeDivisor)
-    {
-        PlayerPrefs.SetInt("TimeDivisor", timeDivisor);
-        PlayerPrefs.Save();
-        Debug.Log("Saved!, " + timeDivisor);
-        SaveTime();
-        SaveDataToFile();
-    }
+    //public void SaveCollectionData(int timeDivisor)
+    //{
+    //    PlayerPrefs.SetInt("TimeDivisor", timeDivisor);
+    //    PlayerPrefs.Save();
+    //    Debug.Log("Saved!, " + timeDivisor);
+    //    SaveTime();
+    //    SaveDataToFile();
+    //}
 
-    public int LoadCollectionData()
-    {
-        int timeDivisor;
-        if (PlayerPrefs.HasKey("TimeDivisor"))
-            timeDivisor = PlayerPrefs.GetInt("TimeDivisor");
-        else
-            timeDivisor = 0;
-        return timeDivisor;
-    }
+    //public int LoadCollectionData()
+    //{
+    //    int timeDivisor;
+    //    if (PlayerPrefs.HasKey("TimeDivisor"))
+    //        timeDivisor = PlayerPrefs.GetInt("TimeDivisor");
+    //    else
+    //        timeDivisor = 0;
+    //    return timeDivisor;
+    //}
 
-    public void SaveContainerData(List<GarbageContainer> containers)
+    //public void SaveContainerData(List<GarbageContainer> containers)
+    //{
+    //    string containerString = "";
+    //    foreach (var container in containers)
+    //    {
+    //       //containerString += container.itemCount + ";";
+    //    }
+    //    PlayerPrefs.SetString("Containers", containerString);
+    //    PlayerPrefs.Save();
+    //    Debug.Log("Saved!, " + containerString);
+    //    SaveTime();
+    //    SaveDataToFile();
+    //}
+
+    //public void LoadContainerData(List<GarbageContainer> containers)
+    //{
+    //    if (PlayerPrefs.HasKey("Containers"))
+    //    {
+    //        string containerString = PlayerPrefs.GetString("Containers");
+    //        string[] containerValues = containerString.Split(';');
+
+    //        int i = 0;
+    //        foreach (var container in containers)
+    //        {
+    //            container.itemCount = Convert.ToInt32(containerValues[i]);
+    //            i++;
+    //        }
+    //    }
+    //    else
+    //    {
+    //        foreach (var container in containers)
+    //        {
+    //            container.itemCount = 10;
+    //        }
+    //    }
+    //}
+
+    public void SaveStorageData(Dictionary<string, int> storageDictionary)
     {
-        string containerString = "";
-        foreach (var container in containers)
+        string storageString = "";
+
+        foreach (var pair in storageDictionary)
         {
-            containerString += container.itemCount + ";";
+            storageString += $"{pair.Key}#{pair.Value};";
         }
-        PlayerPrefs.SetString("Containers", containerString);
-        PlayerPrefs.Save();
-        Debug.Log("Saved!, " + containerString);
-        SaveTime();
-        SaveDataToFile();
+        PlayerPrefs.SetString("Storage", storageString);
     }
 
-    public void LoadContainerData(List<GarbageContainer> containers)
+    public Dictionary<string, int> LoadStorageData()
     {
-        if (PlayerPrefs.HasKey("Containers"))
+        if (PlayerPrefs.HasKey("Storage"))
         {
-            string containerString = PlayerPrefs.GetString("Containers");
-            string[] containerValues = containerString.Split(';');
+            Dictionary<string, int> storageDictionary = new Dictionary<string, int>();
 
-            int i = 0;
-            foreach (var container in containers)
+            string storageString = PlayerPrefs.GetString("Storage");
+            string[] pairs = storageString.Split(';');
+            foreach (var pair in pairs)
             {
-                container.itemCount = Convert.ToInt32(containerValues[i]);
-                i++;
+                if (pair.Contains("#"))
+                {
+                    string[] values = pair.Split('#');
+                    storageDictionary.Add(values[0], Convert.ToInt32(values[1]));
+                }
             }
+
+            return storageDictionary;
         }
-        else
-        {
-            foreach (var container in containers)
-            {
-                container.itemCount = 10;
-            }
-        }
+
+        return null;
     }
 
     public void SaveTime()
@@ -145,9 +179,9 @@ public class SavingLoading : MonoBehaviour
         else file = File.Create(destination);
 
         RealTimeEffects effects = FindObjectOfType<RealTimeEffects>();
-        List<GarbageContainer> containers = effects.GarbageContainers;
+        //List<GarbageContainer> containers = effects.GarbageContainers;
 
-        SaveData data = new SaveData(LoadInventoryData(), LoadCollectionData(), PlayerPrefs.GetString("Containers"), PlayerPrefs.GetString("Time"), LoadOrderData());
+        SaveData data = new SaveData(LoadInventoryData(), LoadOrderData());
         BinaryFormatter bf = new BinaryFormatter();
         bf.Serialize(file, data);
         file.Close();
@@ -169,12 +203,9 @@ public class SavingLoading : MonoBehaviour
         SaveData data = (SaveData)bf.Deserialize(file);
         file.Close();
 
-        Debug.Log("Loaded data from file:\nInventory: " + data.InventoryData + "\nTimeDivisor: " + data.CollectionData + "\nContainers: " + data.ContainerData + "\nTime: " + data.TimeData + "\nOrders: " + data.OrderData);
+        Debug.Log("Loaded data from file:\nInventory: " + data.InventoryData + "\nTimeDivisor: " + data.OrderData);
 
         PlayerPrefs.SetString("Inventory", data.InventoryData);
-        PlayerPrefs.SetInt("TimeDivisor", data.CollectionData);
-        PlayerPrefs.SetString("Containers", data.ContainerData);
-        PlayerPrefs.SetString("Time", data.TimeData);
         PlayerPrefs.SetString("Orders", data.OrderData);
 
         PlayerPrefs.Save();

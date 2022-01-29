@@ -7,6 +7,8 @@ using Button = UnityEngine.UI.Button;
 
 public class UI : MonoBehaviour
 {
+    public static UI Instance { get; private set; }
+
     [SerializeField] private RectTransform background;
     [SerializeField] private RectTransform craftingGrid;
     [SerializeField] private Button inventoryButton;
@@ -16,6 +18,7 @@ public class UI : MonoBehaviour
     [SerializeField] private RectTransform garbageCollectionScreen;
     [SerializeField] private GarbageCollection garbageCollection;
     [SerializeField] private RectTransform recyclingSystem;
+    [SerializeField] private RectTransform storageScreen;
 
     [SerializeField] private RectTransform winPanel;
     [SerializeField] private RectTransform lossPanel;
@@ -33,6 +36,8 @@ public class UI : MonoBehaviour
 
     void Awake()
     {
+        Instance = this;
+
         savingLoading = GetComponent<SavingLoading>();
         realTimeEffects = FindObjectOfType<RealTimeEffects>();
         inventory = GetComponentInParent<Inventory>();
@@ -90,7 +95,7 @@ public class UI : MonoBehaviour
         }
 
         savingLoading.SaveInventoryData();
-        savingLoading.SaveContainerData(realTimeEffects.GarbageContainers);
+        //savingLoading.SaveContainerData(realTimeEffects.GarbageContainers);
 
         CloseAll();
     }
@@ -112,6 +117,7 @@ public class UI : MonoBehaviour
         garbageCollection.gameObject.SetActive(false);
         garbageCollectionScreen.gameObject.SetActive(false);
         recyclingSystem.gameObject.SetActive(false);
+        storageScreen.gameObject.SetActive(false);
     }
 
     public void ShowVictoryScreen()
@@ -136,5 +142,22 @@ public class UI : MonoBehaviour
         background.gameObject.SetActive(true);
         recyclingSystem.gameObject.SetActive(true);
         inventory.AssignNewInventorySlots(RecyclingScreenItemSlots);
+    }
+
+    public void ShowStorageScreen()
+    {
+        inventoryButton.gameObject.SetActive(false);
+        background.gameObject.SetActive(true);
+        storageScreen.gameObject.SetActive(true);
+        inventory.AssignNewInventorySlots(CollectionScreenItemSlots);
+        Storage.Instance.UpdateCardCounts();
+    }
+
+    public void CloseCollectionScreen()
+    {
+        garbageCollection.collectionSlot.KillTheChildren();
+        savingLoading.SaveInventoryData();
+        garbageCollection.gameObject.SetActive(false);
+        garbageCollectionScreen.gameObject.SetActive(false);
     }
 }

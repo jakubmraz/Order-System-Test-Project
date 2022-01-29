@@ -18,13 +18,12 @@ public class Customer : MonoBehaviour
     {
         inventory = FindObjectOfType<Inventory>();
         patienceSlider = GetComponentInChildren<Slider>();
-        Items items = new Items();
 
         patienceSlider.maxValue = PatienceTime;
         patienceSlider.value = patienceSlider.maxValue;
 
         if (DesiredItem != "")
-            desiredItemImage.sprite = items.ItemList.FirstOrDefault(item => item.Name == DesiredItem).Sprite;
+            desiredItemImage.sprite = ItemDataAccessor.Instance.GetItemList().FirstOrDefault(item => item.Name == DesiredItem).Sprite;
         else
             ChooseDesire();
 
@@ -37,7 +36,7 @@ public class Customer : MonoBehaviour
         Items items = new Items();
         int selection = Random.Range(0, items.ItemList.Count);
         DesiredItem = items.ItemList[selection].Name;
-        desiredItemImage.sprite = items.ItemList.FirstOrDefault(item => item.Name == DesiredItem).Sprite;
+        desiredItemImage.sprite = ItemDataAccessor.Instance.GetItemList().FirstOrDefault(item => item.Name == DesiredItem).Sprite;
     }
 
     IEnumerator PatienceCountdownCoroutine()

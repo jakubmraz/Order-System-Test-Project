@@ -8,16 +8,16 @@ public class GarbageContainer : MonoBehaviour
     [SerializeField] private Button collectButton;
     [SerializeField] private GarbageCollection garbageCollection;
 
-    public string ContainedItem;
-    public int itemCount;
+    //public string ContainedItem;
+    //public int itemCount;
 
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            garbageCollection.containedItem = ContainedItem;
-            garbageCollection.itemCount = itemCount;
-            garbageCollection.currentContainer = this;
+            //garbageCollection.containedItem = ContainedItem;
+            //garbageCollection.itemCount = itemCount;
+            //garbageCollection.currentContainer = this;
             collectButton.gameObject.SetActive(true);
         }
     }
@@ -30,13 +30,13 @@ public class GarbageContainer : MonoBehaviour
         }
     }
 
-    public void ReplenishStorage()
-    {
-        itemCount++;
-    }
+    //public void ReplenishStorage()
+    //{
+    //    itemCount++;
+    //}
 
-    public void ReplenishStorage(int amount)
-    {
-        itemCount += amount;
-    }
+    //public void ReplenishStorage(int amount)
+    //{
+    //    itemCount += amount;
+    //}
 }

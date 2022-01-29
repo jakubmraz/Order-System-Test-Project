@@ -179,9 +179,8 @@ public class Inventory : MonoBehaviour
 
     public void AddRandomBrokenItem()
     {
-        Items items = new Items();
-        int randomIndex = Random.Range(0, items.ItemList.Count - 1);
-        string randomItem = items.ItemList[randomIndex].Name;
+        int randomIndex = Random.Range(0, ItemDataAccessor.Instance.GetItemList().Count - 1);
+        string randomItem = ItemDataAccessor.Instance.GetItemList()[randomIndex].Name;
 
         ItemSlot emptySlot = FindFirstEmptySlot();
         emptySlot.Item = Instantiate(ItemPrefab, emptySlot.transform).GetComponent<Item>();

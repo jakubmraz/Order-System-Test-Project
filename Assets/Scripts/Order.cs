@@ -48,16 +48,15 @@ public class Order : MonoBehaviour
 
     public void PickDesiredItems()
     {
-        Items items = new Items();
-        int selection = Random.Range(0, items.ItemList.Count);
-        desiredItem1 = items.ItemList[selection].Name;
-        desiredItem1Image.sprite = items.ItemList.FirstOrDefault(item => item.Name == desiredItem1).Sprite;
+        int selection = Random.Range(0, ItemDataAccessor.Instance.GetItemList().Count);
+        desiredItem1 = ItemDataAccessor.Instance.GetItemList()[selection].Name;
+        desiredItem1Image.sprite = ItemDataAccessor.Instance.GetItemList().FirstOrDefault(item => item.Name == desiredItem1).Sprite;
 
         if (Random.Range(1, 10) <= 3)
         {
-            selection = Random.Range(0, items.ItemList.Count);
-            desiredItem2 = items.ItemList[selection].Name;
-            desiredItem2Image.sprite = items.ItemList.FirstOrDefault(item => item.Name == desiredItem2).Sprite;
+            selection = Random.Range(0, ItemDataAccessor.Instance.GetItemList().Count);
+            desiredItem2 = ItemDataAccessor.Instance.GetItemList()[selection].Name;
+            desiredItem2Image.sprite = ItemDataAccessor.Instance.GetItemList().FirstOrDefault(item => item.Name == desiredItem2).Sprite;
         }
         else
         {
@@ -129,11 +128,10 @@ public class Order : MonoBehaviour
         this.skipped = skipped;
         completedTime = timeCompleted;
 
-        Items items = new Items();
-        desiredItem1Image.sprite = items.ItemList.FirstOrDefault(item => item.Name == desiredItem1).Sprite;
+        desiredItem1Image.sprite = ItemDataAccessor.Instance.GetItemList().FirstOrDefault(item => item.Name == desiredItem1).Sprite;
         if (desiredItem2 != "")
         {
-            desiredItem2Image.sprite = items.ItemList.FirstOrDefault(item => item.Name == desiredItem2).Sprite;
+            desiredItem2Image.sprite = ItemDataAccessor.Instance.GetItemList().FirstOrDefault(item => item.Name == desiredItem2).Sprite;
         }
         else
         {

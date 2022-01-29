@@ -17,7 +17,6 @@ public class CraftingSystem : MonoBehaviour
     [SerializeField] public ItemSlot resultSlot;
 
     [HideInInspector] public List<ItemSlot> craftingSlots;
-    private Items items;
 
     public bool CraftingActive;
 
@@ -28,7 +27,6 @@ public class CraftingSystem : MonoBehaviour
         {
             topLeftSlot, topCentreSlot, topRightSlot, midLeftSlot, midCentreSlot, midRightSlot, botLeftSlot, botCentreSlot, botRightSlot
         };
-        items = new Items();
     }
 
     public void Craft()
@@ -64,7 +62,7 @@ public class CraftingSystem : MonoBehaviour
 
     private void ShowCraftableItem(string craftingString)
     {
-        foreach (var item in items.ItemList)
+        foreach (var item in ItemDataAccessor.Instance.GetItemList())
         {
             if (item.Recipe == craftingString)
             {

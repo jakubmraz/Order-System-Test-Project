@@ -21,7 +21,6 @@ public class RecyclingSystem : MonoBehaviour
     [SerializeField] private Button recycleButton;
 
     private List<ItemSlot> resultSlots;
-    private Items items;
 
     //How many items will be missing from the original recipe
     private int recyclingPenalty = 2;
@@ -33,7 +32,6 @@ public class RecyclingSystem : MonoBehaviour
         {
             topLeftSlot, topCentreSlot, topRightSlot, midLeftSlot, midCentreSlot, midRightSlot, botLeftSlot, botCentreSlot, botRightSlot
         };
-        items = new Items();
     }
 
     public void Recycle()
@@ -42,7 +40,7 @@ public class RecyclingSystem : MonoBehaviour
             return;
 
         Item itemToBeRecycled = entrySlot.Item;
-        string recipe = items.ItemList.FirstOrDefault(item => itemToBeRecycled.itemData.Name == item.Name).Recipe;
+        string recipe = ItemDataAccessor.Instance.GetItemList().FirstOrDefault(item => itemToBeRecycled.itemData.Name == item.Name).Recipe;
 
         string[] splitString = recipe.Split(';');
         int i = 0;
