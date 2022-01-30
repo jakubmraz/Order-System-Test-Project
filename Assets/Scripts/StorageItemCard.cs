@@ -10,6 +10,17 @@ public class StorageItemCard : MonoBehaviour
     [SerializeField] private TextMeshProUGUI itemName;
     [SerializeField] private Image itemImage;
     [SerializeField] private TextMeshProUGUI itemCount;
+    [SerializeField] private Button returnButton;
+    [SerializeField] private Button takeButton;
+
+    public void UpdateButtons()
+    {
+        if (Inventory.Instance.FindFirstEmptySlot() == null || itemCount.text == "0") takeButton.enabled = false;
+        else takeButton.enabled = true;
+
+        if (Inventory.Instance.CheckForItem(itemName.text)) returnButton.enabled = true;
+        else returnButton.enabled = false;
+    }
 
     public void UpdateItemCard(string itemName, Sprite itemImage, int itemCount)
     {
@@ -31,6 +42,29 @@ public class StorageItemCard : MonoBehaviour
     public string GetItem()
     {
         return itemName.text;
+    }
+
+    public void TakeItem()
+    {
+        ItemSlot slot = Inventory.Instance.FindFirstEmptySlot();
+        if (slot)
+        {
+            slot.Item = Instantiate(slot.itemPrefab, slot.transform).GetComponent<Item>();
+            slot.Item.InitializeItem(itemName.text);
+        }
+
+        Storage.Instance.itemValues[itemName.text]--;
+        Storage.Instance.UpdateCardCounts();
+    }
+
+    public void ReturnItem()
+    {
+        if(Inventory.Instance.CheckForItem(itemName.text))
+        {
+            Inventory.Instance.RemoveItem(itemName.text);
+            Storage.Instance.itemValues[itemName.text]++;
+        }
+        Storage.Instance.UpdateCardCounts();
     }
 
     //private Color GetRandomPastelColor()

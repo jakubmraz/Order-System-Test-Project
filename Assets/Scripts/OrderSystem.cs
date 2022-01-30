@@ -72,14 +72,14 @@ public class OrderSystem : MonoBehaviour
 
     public void FillOrdersWithLoadedData(string data)
     {
-        Debug.Log(data);
+        //Debug.Log(data);
         string[] splitString = data.Split(';');
 
         int i = 0;
         foreach (Order order in orders)
         {
             string[] splitData = splitString[i].Split('#');
-            Debug.Log(splitData[0]);
+            //Debug.Log(splitData[0]);
             try
             {
                 order.FillLoadedData(splitData[0], splitData[1], bool.Parse(splitData[2]), DateTime.Parse(splitData[3]),

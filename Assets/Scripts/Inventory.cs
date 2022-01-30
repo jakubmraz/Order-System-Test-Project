@@ -135,6 +135,7 @@ public class Inventory : MonoBehaviour
 
     public bool CheckForNonBrokenItem(string itemName)
     {
+
         foreach (var itemSlot in itemSlots)
         {
             if (itemSlot.Item)

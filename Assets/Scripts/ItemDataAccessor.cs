@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ItemDataAccessor : MonoBehaviour
 {
-    public static ItemDataAccessor Instance;
+    public static ItemDataAccessor Instance { get; private set; }
     [SerializeField] private Items items;
 
     void Awake()

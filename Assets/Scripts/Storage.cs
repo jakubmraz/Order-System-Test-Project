@@ -75,6 +75,14 @@ public class Storage : MonoBehaviour
         {
             int count = itemValues[card.GetItem()];
             card.UpdateItemCount(count);
+            card.UpdateButtons();
         }
+        SavingLoading.Instance.SaveStorageData(itemValues);
+    }
+
+    public void FillItem(string itemName, int amount)
+    {
+        itemValues[itemName] += amount;
+        UpdateCardCounts();
     }
 }

@@ -76,42 +76,42 @@ public class SavingLoading : MonoBehaviour
     //    return timeDivisor;
     //}
 
-    //public void SaveContainerData(List<GarbageContainer> containers)
-    //{
-    //    string containerString = "";
-    //    foreach (var container in containers)
-    //    {
-    //       //containerString += container.itemCount + ";";
-    //    }
-    //    PlayerPrefs.SetString("Containers", containerString);
-    //    PlayerPrefs.Save();
-    //    Debug.Log("Saved!, " + containerString);
-    //    SaveTime();
-    //    SaveDataToFile();
-    //}
+    public void SaveContainerData(List<GarbageContainer> containers)
+    {
+        string containerString = "";
+        foreach (var container in containers)
+        {
+            containerString += container.itemCount + ";";
+        }
+        PlayerPrefs.SetString("Containers", containerString);
+        PlayerPrefs.Save();
+        Debug.Log("Saved!, " + containerString);
+        SaveTime();
+        SaveDataToFile();
+    }
 
-    //public void LoadContainerData(List<GarbageContainer> containers)
-    //{
-    //    if (PlayerPrefs.HasKey("Containers"))
-    //    {
-    //        string containerString = PlayerPrefs.GetString("Containers");
-    //        string[] containerValues = containerString.Split(';');
+    public void LoadContainerData(List<GarbageContainer> containers)
+    {
+        if (PlayerPrefs.HasKey("Containers"))
+        {
+            string containerString = PlayerPrefs.GetString("Containers");
+            string[] containerValues = containerString.Split(';');
 
-    //        int i = 0;
-    //        foreach (var container in containers)
-    //        {
-    //            container.itemCount = Convert.ToInt32(containerValues[i]);
-    //            i++;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        foreach (var container in containers)
-    //        {
-    //            container.itemCount = 10;
-    //        }
-    //    }
-    //}
+            int i = 0;
+            foreach (var container in containers)
+            {
+                container.itemCount = Convert.ToInt32(containerValues[i]);
+                i++;
+            }
+        }
+        else
+        {
+            foreach (var container in containers)
+            {
+                container.itemCount = 10;
+            }
+        }
+    }
 
     public void SaveStorageData(Dictionary<string, int> storageDictionary)
     {
@@ -179,7 +179,7 @@ public class SavingLoading : MonoBehaviour
         else file = File.Create(destination);
 
         RealTimeEffects effects = FindObjectOfType<RealTimeEffects>();
-        //List<GarbageContainer> containers = effects.GarbageContainers;
+        List<GarbageContainer> containers = ContainerSystem.Instance.garbageContainers;
 
         SaveData data = new SaveData(LoadInventoryData(), LoadOrderData());
         BinaryFormatter bf = new BinaryFormatter();
