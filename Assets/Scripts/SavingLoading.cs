@@ -170,6 +170,42 @@ public class SavingLoading : MonoBehaviour
         return minuteDifference;
     }
 
+    public void SaveStorageCapacity()
+    {
+        PlayerPrefs.SetInt("StorageCapacity", Storage.Instance.MaxStorageSpace);
+        PlayerPrefs.Save();
+    }
+
+    public bool LoadStorageCapacity(out int capacity)
+    {
+        capacity = 0;
+        if (PlayerPrefs.HasKey("StorageCapacity"))
+        {
+            capacity = PlayerPrefs.GetInt("StorageCapacity");
+            return true;
+        }
+
+        return false;
+    }
+
+    public void SaveContainerCapacity()
+    {
+        PlayerPrefs.SetInt("ContainerCapacity", ContainerSystem.Instance.MaxItemCount);
+        PlayerPrefs.Save();
+    }
+
+    public bool LoadContainerCapacity(out int capacity)
+    {
+        capacity = 0;
+        if(PlayerPrefs.HasKey("ContainerCapacity"))
+        {
+            capacity = PlayerPrefs.GetInt("ContainerCapacity");
+            return true;
+        }
+
+        return false;
+    }
+
     public void SaveDataToFile()
     {
         string destination = Application.persistentDataPath + "/save.dat";

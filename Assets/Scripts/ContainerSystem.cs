@@ -7,10 +7,17 @@ public class ContainerSystem : MonoBehaviour
     public static ContainerSystem Instance { get; private set; }
     public List<GarbageContainer> garbageContainers;
 
+    public int MaxItemCount = 50;
+
     void Awake()
     {
         Instance = this;
+
         LoadContainers();
+        if (SavingLoading.Instance.LoadContainerCapacity(out int capacity))
+        {
+            MaxItemCount = capacity;
+        }
     }
 
     public GarbageContainer GetContainer(ItemData item)

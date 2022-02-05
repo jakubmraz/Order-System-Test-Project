@@ -12,26 +12,37 @@ public class StorageItemCard : MonoBehaviour
     [SerializeField] private TextMeshProUGUI itemCount;
     [SerializeField] private Button returnButton;
     [SerializeField] private Button takeButton;
+    [SerializeField] private Slider itemCountSlider;
+
+    private int numberCount;
 
     public void UpdateButtons()
     {
-        if (Inventory.Instance.FindFirstEmptySlot() == null || itemCount.text == "0") takeButton.enabled = false;
+        if (Inventory.Instance.FindFirstEmptySlot() == null || numberCount == 0) takeButton.enabled = false;
         else takeButton.enabled = true;
 
-        if (Inventory.Instance.CheckForItem(itemName.text)) returnButton.enabled = true;
+        if (Inventory.Instance.CheckForItem(itemName.text) && numberCount < Storage.Instance.MaxStorageSpace ) returnButton.enabled = true;
         else returnButton.enabled = false;
     }
 
     public void UpdateItemCard(string itemName, Sprite itemImage, int itemCount)
     {
+        numberCount = itemCount;
+
         this.itemName.text = itemName;
         this.itemImage.sprite = itemImage;
-        this.itemCount.text = itemCount.ToString();
+        this.itemCount.text = itemCount + "/" + Storage.Instance.MaxStorageSpace;
+        this.itemCountSlider.value = itemCount;
+        this.itemCountSlider.maxValue = Storage.Instance.MaxStorageSpace;
     }
 
     public void UpdateItemCount(int itemCount)
     {
-        this.itemCount.text = itemCount.ToString();
+        numberCount = itemCount;
+
+        this.itemCount.text = itemCount + "/" + Storage.Instance.MaxStorageSpace;
+        this.itemCountSlider.value = itemCount;
+        this.itemCountSlider.maxValue = Storage.Instance.MaxStorageSpace;
     }
 
     public void OpenCollection()

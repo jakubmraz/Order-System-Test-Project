@@ -10,12 +10,19 @@ public class Storage : MonoBehaviour
     [SerializeField] private RectTransform storageGridLayout;
     [SerializeField] private StorageItemCard itemCardPrefab;
 
+    public int MaxStorageSpace = 50;
+
     void Start()
     {
         Instance = this;
 
         itemCards = new List<StorageItemCard>();
         itemValues = new Dictionary<string, int>();
+
+        if (SavingLoading.Instance.LoadStorageCapacity(out int capacity))
+        {
+            MaxStorageSpace = capacity;
+        }
 
         Dictionary<string, int> loadedValues = SavingLoading.Instance.LoadStorageData();
 
@@ -84,5 +91,10 @@ public class Storage : MonoBehaviour
     {
         itemValues[itemName] += amount;
         UpdateCardCounts();
+    }
+
+    public int GetItemCount(string itemName)
+    {
+        return itemValues[itemName];
     }
 }

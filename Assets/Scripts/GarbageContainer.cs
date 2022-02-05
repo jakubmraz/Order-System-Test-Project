@@ -16,19 +16,18 @@ public class GarbageContainer : MonoBehaviour
 
     public ItemData ContainedItem;
     public int itemCount;
-    public const int maxItemCount = 50;
     public const int percentageSentOver = 100;
 
     void Awake()
     {
         itemImage.sprite = ContainedItem.Sprite;
         itemText.text = ContainedItem.Name;
-        itemCountSlider.maxValue = maxItemCount;
+        itemCountSlider.maxValue = ContainerSystem.Instance.MaxItemCount;
     }
 
     void Update()
     {
-        itemCountText.text = itemCount + "/" + maxItemCount;
+        itemCountText.text = itemCount + "/" + ContainerSystem.Instance.MaxItemCount;
         itemCountSlider.value = itemCount;
     }
 
@@ -60,13 +59,22 @@ public class GarbageContainer : MonoBehaviour
     public void ReplenishStorage(int amount)
     {
         itemCount += amount;
+        if (itemCount > ContainerSystem.Instance.MaxItemCount) itemCount = ContainerSystem.Instance.MaxItemCount;
         ContainerSystem.Instance.SaveContainers();
     }
 
     public void SendToStorage()
     {
         float divisor = percentageSentOver / 100;
-        int amountSentOver = Convert.ToInt32(itemCount / divisor);  
+        int amountSentOver = Convert.ToInt32(itemCount / divisor);
+
+        if (amountSentOver > Storage.Instance.MaxStorageSpace - Storage.Instance.GetItemCount(ContainedItem.Name))
+        {
+            int spaceFree = Storage.Instance.MaxStorageSpace - Storage.Instance.GetItemCount(ContainedItem.Name);
+            amountSentOver = spaceFree;
+            Debug.Log("Not enough space in storage. Only sent over " + amountSentOver);
+        }
+
         Storage.Instance.FillItem(ContainedItem.Name, amountSentOver);
         itemCount -= amountSentOver;
         ContainerSystem.Instance.SaveContainers();
