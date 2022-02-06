@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5134a440732e808449806a19b9e2eddc, type: 3}
+  m_Name: Bicycle Shop
+  m_EditorClassIdentifier: 
+  BuildingName: Bicycle Shop
+  DesiredItems:
+  - {fileID: 11400000, guid: 1f8be7b8e4d803246aace6749e59d3d4, type: 2}

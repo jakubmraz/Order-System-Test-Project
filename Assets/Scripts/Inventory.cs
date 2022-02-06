@@ -171,6 +171,7 @@ public class Inventory : MonoBehaviour
                 if (itemSlot.Item.itemData.Name == itemName)
                 {
                     Destroy(itemSlot.Item.gameObject);
+                    itemSlot.Item = null;
                     return true;
                 }
         }
