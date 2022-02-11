@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,6 +30,8 @@ public class StorageItemCard : MonoBehaviour
 
     public void UpdateItemCard(ItemData itemData, int itemCount)
     {
+        item = itemData;
+
         numberCount = itemCount;
 
         this.itemName.text = itemData.Name;
