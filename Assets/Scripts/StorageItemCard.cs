@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class StorageItemCard : MonoBehaviour
 {
+    public ItemData item;
+
     [SerializeField] private TextMeshProUGUI itemName;
     [SerializeField] private Image itemImage;
     [SerializeField] private TextMeshProUGUI itemCount;
@@ -25,12 +27,12 @@ public class StorageItemCard : MonoBehaviour
         else returnButton.enabled = false;
     }
 
-    public void UpdateItemCard(string itemName, Sprite itemImage, int itemCount)
+    public void UpdateItemCard(ItemData itemData, int itemCount)
     {
         numberCount = itemCount;
 
-        this.itemName.text = itemName;
-        this.itemImage.sprite = itemImage;
+        this.itemName.text = itemData.Name;
+        this.itemImage.sprite = itemData.Sprite;
         this.itemCount.text = itemCount + "/" + Storage.Instance.MaxStorageSpace;
         this.itemCountSlider.value = itemCount;
         this.itemCountSlider.maxValue = Storage.Instance.MaxStorageSpace;

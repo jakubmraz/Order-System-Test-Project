@@ -41,7 +41,7 @@ public class Storage : MonoBehaviour
                     itemValues.Add(item.Name, value);
                 }
                 itemCards.Add(itemCard);
-                itemCard.UpdateItemCard(item.Name, item.Sprite, value);
+                itemCard.UpdateItemCard(item, value);
             }
         }
         else
@@ -51,7 +51,7 @@ public class Storage : MonoBehaviour
                 StorageItemCard itemCard = Instantiate(itemCardPrefab, storageGridLayout).GetComponent<StorageItemCard>();
                 itemValues.Add(item.Name, 10);
                 itemCards.Add(itemCard);
-                itemCard.UpdateItemCard(item.Name, item.Sprite, 10);
+                itemCard.UpdateItemCard(item, 10);
             }
         }
     }

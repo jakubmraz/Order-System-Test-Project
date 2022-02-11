@@ -225,6 +225,7 @@ public class SavingLoading : MonoBehaviour
 
     public void LoadDataFromFile()
     {
+        Debug.Log(Application.persistentDataPath);
         string destination = Application.persistentDataPath + "/save.dat";
         FileStream file;
 
