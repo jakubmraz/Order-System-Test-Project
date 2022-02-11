@@ -23,7 +23,7 @@ public class StorageItemCard : MonoBehaviour
         if (Inventory.Instance.FindFirstEmptySlot() == null || numberCount == 0) takeButton.enabled = false;
         else takeButton.enabled = true;
 
-        if (Inventory.Instance.CheckForItem(itemName.text) && numberCount < Storage.Instance.MaxStorageSpace ) returnButton.enabled = true;
+        if (Inventory.Instance.CheckForItem(item.Name) && numberCount < Storage.Instance.MaxStorageSpace ) returnButton.enabled = true;
         else returnButton.enabled = false;
     }
 
@@ -49,12 +49,12 @@ public class StorageItemCard : MonoBehaviour
 
     public void OpenCollection()
     {
-        Storage.Instance.OpenResourceCollection(itemName.text);
+        Storage.Instance.OpenResourceCollection(item.Name);
     }
 
     public string GetItem()
     {
-        return itemName.text;
+        return item.Name;
     }
 
     public void TakeItem()
@@ -63,19 +63,19 @@ public class StorageItemCard : MonoBehaviour
         if (slot)
         {
             slot.Item = Instantiate(slot.itemPrefab, slot.transform).GetComponent<Item>();
-            slot.Item.InitializeItem(itemName.text);
+            slot.Item.InitializeItem(item.Name);
         }
 
-        Storage.Instance.itemValues[itemName.text]--;
+        Storage.Instance.itemValues[item.Name]--;
         Storage.Instance.UpdateCardCounts();
     }
 
     public void ReturnItem()
     {
-        if(Inventory.Instance.CheckForItem(itemName.text))
+        if(Inventory.Instance.CheckForItem(item.Name))
         {
-            Inventory.Instance.RemoveItem(itemName.text);
-            Storage.Instance.itemValues[itemName.text]++;
+            Inventory.Instance.RemoveItem(item.Name);
+            Storage.Instance.itemValues[item.Name]++;
         }
         Storage.Instance.UpdateCardCounts();
     }
