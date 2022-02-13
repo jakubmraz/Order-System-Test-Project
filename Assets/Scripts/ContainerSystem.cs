@@ -7,17 +7,34 @@ public class ContainerSystem : MonoBehaviour
     public static ContainerSystem Instance { get; private set; }
     public List<GarbageContainer> garbageContainers;
 
-    public int MaxItemCount = 50;
+    public Dictionary<string, int> ItemCapacities;
+    public int BaseItemCapacity = 50;
 
     void Awake()
     {
         Instance = this;
+        
+        ItemCapacities = new Dictionary<string, int>();
 
         LoadContainers();
-        if (SavingLoading.Instance.LoadContainerCapacity(out int capacity))
+        if (SavingLoading.Instance.LoadContainerCapacity(out Dictionary<string, int> capacities))
         {
-            MaxItemCount = capacity;
+            ItemCapacities = capacities;
         }
+        else
+        {
+            foreach (var item in ItemDataAccessor.Instance.GetBaseItemList())
+            {
+                ItemCapacities.Add(item.Name, BaseItemCapacity);
+            }
+        }
+
+        foreach (var cap in ItemCapacities)
+        {
+            Debug.Log(cap.Key + " " + cap.Value);
+        }
+
+        UpdateContainerCaps();
     }
 
     public GarbageContainer GetContainer(ItemData item)
@@ -50,5 +67,36 @@ public class ContainerSystem : MonoBehaviour
     public void SaveContainers()
     {
         SavingLoading.Instance.SaveContainerData(garbageContainers);
+    }
+
+    public void ChangeContainerCapacity(string itemName, int value)
+    {
+        ItemCapacities[itemName] = value;
+        SavingLoading.Instance.SaveContainerCapacity(ItemCapacities);
+        UpdateContainerCaps();
+    }
+
+    public void IncreaseContainerCapacity(string itemName, int value)
+    {
+        ItemCapacities[itemName] += value;
+        SavingLoading.Instance.SaveContainerCapacity(ItemCapacities);
+        UpdateContainerCaps();
+    }
+
+    private void UpdateContainerCaps()
+    {
+        foreach (var container in garbageContainers)
+        {
+            foreach (var cap in ItemCapacities)
+            {
+                if (cap.Key == container.ContainedItem.Name)
+                {
+                    container.itemCapacity = cap.Value;
+                    break;
+                }
+
+                container.itemCapacity = BaseItemCapacity;
+            }
+        }
     }
 }

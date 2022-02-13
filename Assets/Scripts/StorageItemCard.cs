@@ -18,36 +18,47 @@ public class StorageItemCard : MonoBehaviour
     [SerializeField] private Slider itemCountSlider;
 
     private int numberCount;
+    private int maxCount;
 
     public void UpdateButtons()
     {
         if (Inventory.Instance.FindFirstEmptySlot() == null || numberCount == 0) takeButton.enabled = false;
         else takeButton.enabled = true;
 
-        if (Inventory.Instance.CheckForItem(item.Name) && numberCount < Storage.Instance.MaxStorageSpace ) returnButton.enabled = true;
+        if (Inventory.Instance.CheckForItem(item.Name) && numberCount < maxCount ) returnButton.enabled = true;
         else returnButton.enabled = false;
     }
 
-    public void UpdateItemCard(ItemData itemData, int itemCount)
+    public void UpdateItemCard(ItemData itemData, int itemCount, int maxCount)
     {
         item = itemData;
 
         numberCount = itemCount;
+        this.maxCount = maxCount;
 
         this.itemName.text = itemData.Name;
         this.itemImage.sprite = itemData.Sprite;
-        this.itemCount.text = itemCount + "/" + Storage.Instance.MaxStorageSpace;
+        this.itemCount.text = itemCount + "/" + maxCount;
         this.itemCountSlider.value = itemCount;
-        this.itemCountSlider.maxValue = Storage.Instance.MaxStorageSpace;
+        this.itemCountSlider.maxValue = maxCount;
     }
 
     public void UpdateItemCount(int itemCount)
     {
         numberCount = itemCount;
 
-        this.itemCount.text = itemCount + "/" + Storage.Instance.MaxStorageSpace;
+        this.itemCount.text = itemCount + "/" + maxCount;
         this.itemCountSlider.value = itemCount;
-        this.itemCountSlider.maxValue = Storage.Instance.MaxStorageSpace;
+        this.itemCountSlider.maxValue = maxCount;
+    }
+
+    public void UpdateItemCapacity(int capacity)
+    {
+        maxCount = capacity;
+
+        this.itemCount.text = numberCount + "/" + maxCount;
+        this.itemCountSlider.value = numberCount;
+        this.itemCountSlider.maxValue = maxCount;
     }
 
     public void OpenCollection()

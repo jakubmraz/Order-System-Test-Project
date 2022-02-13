@@ -7,10 +7,11 @@ public class Storage : MonoBehaviour
 
     private List<StorageItemCard> itemCards;
     public Dictionary<string, int> itemValues;
+    public Dictionary<string, int> itemCapacities;
     [SerializeField] private RectTransform storageGridLayout;
     [SerializeField] private StorageItemCard itemCardPrefab;
 
-    public int MaxStorageSpace = 50;
+    public int BaseStorageSpace = 50;
 
     void Start()
     {
@@ -18,10 +19,18 @@ public class Storage : MonoBehaviour
 
         itemCards = new List<StorageItemCard>();
         itemValues = new Dictionary<string, int>();
+        itemCapacities = new Dictionary<string, int>();
 
-        if (SavingLoading.Instance.LoadStorageCapacity(out int capacity))
+        if(SavingLoading.Instance.LoadStorageCapacity(out Dictionary<string, int> capacities))
         {
-            MaxStorageSpace = capacity;
+            itemCapacities = capacities;
+        }
+        else
+        {
+            foreach (var item in ItemDataAccessor.Instance.GetBaseItemList())
+            {
+                itemCapacities.Add(item.Name, BaseStorageSpace);
+            }
         }
 
         Dictionary<string, int> loadedValues = SavingLoading.Instance.LoadStorageData();
@@ -31,6 +40,7 @@ public class Storage : MonoBehaviour
             foreach (var item in ItemDataAccessor.Instance.GetBaseItemList())
             {
                 StorageItemCard itemCard = Instantiate(itemCardPrefab, storageGridLayout).GetComponent<StorageItemCard>();
+
                 if (loadedValues.TryGetValue(item.Name, out int value))
                 {
                     itemValues.Add(item.Name, value);
@@ -40,8 +50,9 @@ public class Storage : MonoBehaviour
                     value = 0;
                     itemValues.Add(item.Name, value);
                 }
+
                 itemCards.Add(itemCard);
-                itemCard.UpdateItemCard(item, value);
+                itemCard.UpdateItemCard(item, value, GetItemCapacity(item.Name));
             }
         }
         else
@@ -51,7 +62,7 @@ public class Storage : MonoBehaviour
                 StorageItemCard itemCard = Instantiate(itemCardPrefab, storageGridLayout).GetComponent<StorageItemCard>();
                 itemValues.Add(item.Name, 10);
                 itemCards.Add(itemCard);
-                itemCard.UpdateItemCard(item, 10);
+                itemCard.UpdateItemCard(item, 10, GetItemCapacity(item.Name));
             }
         }
     }
@@ -82,6 +93,8 @@ public class Storage : MonoBehaviour
         {
             int count = itemValues[card.GetItem()];
             card.UpdateItemCount(count);
+            int cap = itemCapacities[card.GetItem()];
+            card.UpdateItemCapacity(cap);
             card.UpdateButtons();
         }
         SavingLoading.Instance.SaveStorageData(itemValues);
@@ -96,5 +109,24 @@ public class Storage : MonoBehaviour
     public int GetItemCount(string itemName)
     {
         return itemValues[itemName];
+    }
+
+    public int GetItemCapacity(string itemName)
+    {
+        return itemCapacities[itemName];
+    }
+
+    public void ChangeItemCapacity(string itemName, int value)
+    {
+        itemCapacities[itemName] = value;
+        SavingLoading.Instance.SaveStorageCapacity(itemCapacities);
+        UpdateCardCounts();
+    }
+
+    public void IncreaseItemCapacity(string itemName, int value)
+    {
+        itemCapacities[itemName] += value;
+        SavingLoading.Instance.SaveStorageCapacity(itemCapacities);
+        UpdateCardCounts();
     }
 }

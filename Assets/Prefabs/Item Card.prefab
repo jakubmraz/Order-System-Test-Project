@@ -826,8 +826,8 @@ MonoBehaviour:
   m_IgnoreLayout: 0
   m_MinWidth: -1
   m_MinHeight: -1
-  m_PreferredWidth: 130
-  m_PreferredHeight: 140
+  m_PreferredWidth: 390
+  m_PreferredHeight: 420
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
@@ -843,6 +843,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b34832cf19315024ab917fc19af694b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  item: {fileID: 0}
   itemName: {fileID: 6140558413460531731}
   itemImage: {fileID: 7011911925821679659}
   itemCount: {fileID: 6620009343742515871}

@@ -170,36 +170,68 @@ public class SavingLoading : MonoBehaviour
         return minuteDifference;
     }
 
-    public void SaveStorageCapacity()
+    public void SaveStorageCapacity(Dictionary<string, int> storageCapacityDictionary)
     {
-        PlayerPrefs.SetInt("StorageCapacity", Storage.Instance.MaxStorageSpace);
+        string storageString = "";
+
+        foreach (var pair in storageCapacityDictionary)
+        {
+            storageString += $"{pair.Key}#{pair.Value};";
+        }
+        PlayerPrefs.SetString("StorageCapacity", storageString);
         PlayerPrefs.Save();
     }
 
-    public bool LoadStorageCapacity(out int capacity)
+    public bool LoadStorageCapacity(out Dictionary<string, int> capacities)
     {
-        capacity = 0;
+        capacities = new Dictionary<string, int>();
+
         if (PlayerPrefs.HasKey("StorageCapacity"))
         {
-            capacity = PlayerPrefs.GetInt("StorageCapacity");
+            string[] pairs = PlayerPrefs.GetString("StorageCapacity").Split(';');
+            foreach (var pair in pairs)
+            {
+                if (pair.Contains("#"))
+                {
+                    string[] values = pair.Split('#');
+                    capacities.Add(values[0], Convert.ToInt32(values[1]));
+                }
+            }
+
             return true;
         }
 
         return false;
     }
 
-    public void SaveContainerCapacity()
+    public void SaveContainerCapacity(Dictionary<string, int> containerCapacityDictionary)
     {
-        PlayerPrefs.SetInt("ContainerCapacity", ContainerSystem.Instance.MaxItemCount);
+        string storageString = "";
+
+        foreach (var pair in containerCapacityDictionary)
+        {
+            storageString += $"{pair.Key}#{pair.Value};";
+        }
+        PlayerPrefs.SetString("StorageCapacity", storageString);
         PlayerPrefs.Save();
     }
 
-    public bool LoadContainerCapacity(out int capacity)
+    public bool LoadContainerCapacity(out Dictionary<string, int> capacities)
     {
-        capacity = 0;
-        if(PlayerPrefs.HasKey("ContainerCapacity"))
+        capacities = new Dictionary<string, int>();
+
+        if (PlayerPrefs.HasKey("StorageCapacity"))
         {
-            capacity = PlayerPrefs.GetInt("ContainerCapacity");
+            string[] pairs = PlayerPrefs.GetString("StorageCapacity").Split(';');
+            foreach (var pair in pairs)
+            {
+                if (pair.Contains("#"))
+                {
+                    string[] values = pair.Split('#');
+                    capacities.Add(values[0], Convert.ToInt32(values[1]));
+                }
+            }
+
             return true;
         }
 
