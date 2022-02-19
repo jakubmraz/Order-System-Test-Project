@@ -1,5 +1,5 @@
 ﻿using System;
-
+using System.Collections;
 using UnityEngine;
 
 public class PlayerValues : MonoBehaviour
@@ -14,6 +14,8 @@ public class PlayerValues : MonoBehaviour
     public int PlayerEnergyMax;
     public int PlayerMoney;
 
+    private DateTime lastEnergyGain;
+
     void Awake()
     {
         Instance = this;
@@ -21,7 +23,9 @@ public class PlayerValues : MonoBehaviour
 
     void Start()
     {
-        
+        LoadPlayerData();
+        EnergyGainStartup();
+        StartCoroutine(PassiveEnergyCoroutine());
     }
 
     void Update()
@@ -29,11 +33,87 @@ public class PlayerValues : MonoBehaviour
         
     }
 
+    private IEnumerator PassiveEnergyCoroutine()
+    {
+        while (true)
+        {
+            Debug.Log("Energy:" + PlayerEnergy);
+
+            yield return new WaitForSeconds(60f);
+            AddEnergy(1);
+
+            lastEnergyGain = DateTime.Now;
+            SaveEnergyTime();
+        }
+    }
+
+    private void SaveEnergyTime()
+    {
+        PlayerPrefs.SetString("EnergyTime", lastEnergyGain.ToString());
+        PlayerPrefs.Save();
+    }
+
+    private void LoadEnergyTime()
+    {
+        if (PlayerPrefs.HasKey("EnergyTime"))
+        {
+            lastEnergyGain = DateTime.Parse(PlayerPrefs.GetString("EnergyTime"));
+        }
+        else
+        {
+            lastEnergyGain = DateTime.Now;
+        }
+    }
+
+    private void EnergyGainStartup()
+    {
+        LoadEnergyTime();
+        TimeSpan timeSpan = DateTime.Now.Subtract(lastEnergyGain);
+        AddEnergy(timeSpan.Minutes);
+
+        lastEnergyGain = DateTime.Now;
+        SaveEnergyTime();
+    }
+
+    public bool CheckEnergy(int amount)
+    {
+        if (PlayerEnergy < amount) return false;
+        return true;
+    }
+
+    public void AddMoney(int amount)
+    {
+        PlayerMoney += amount;
+        SavePlayerData();
+    }
+
+    public void AddEnergy(int amount)
+    {
+        PlayerEnergy += amount;
+        if (PlayerEnergy > PlayerEnergyMax)
+        {
+            PlayerEnergy = PlayerEnergyMax;
+        }
+        SavePlayerData();
+    }
+
+    public void AddXp(int amount)
+    {
+        PlayerXp += amount;
+        if (PlayerXp >= PlayerXpRequired)
+        {
+            PlayerLevel++;
+            PlayerXp -= PlayerXpRequired;
+        }
+        SavePlayerData();
+    }
+
     public void SavePlayerData()
     {
         string playerData =
             $"{PlayerName}§{PlayerLevel}§{PlayerXp}§{PlayerXpRequired}§{PlayerEnergy}§{PlayerEnergyMax}§{PlayerMoney}";
         PlayerPrefs.SetString("PlayerData", playerData);
+        PlayerPrefs.Save();
     }
 
     public bool LoadPlayerData()
