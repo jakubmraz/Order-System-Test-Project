@@ -21,19 +21,18 @@ public class ContractInfoBoard : MonoBehaviour
 
         foreach (var activeContract in ContractSystem.Instance.GetActiveContracts())
         {
-            bool active = activeContract.GetContractInfo(out ItemData itemDesired, out int amountDesired,
-                out int amountDelivered, out _);
+            bool active = activeContract.GetContractInfo(out ContractRequest[] contractRequests, out _);
 
-            contractPanels[i].UpdateContractPanel(active, activeContract.GetBuildingName(), itemDesired.Sprite, amountDesired, amountDelivered);
+            contractPanels[i].UpdateContractPanel(active, activeContract.GetBuildingName(), contractRequests);
 
             i++;
         }
 
         for (; i < contractPanels.Count; i++)
         {
-               contractPanels[i].UpdateContractPanel(false, ":^)", default, default, default); 
+            contractPanels[i].UpdateContractPanel(false, ":^)", default);
         }
-        
+
     }
 
     void OnTriggerEnter(Collider other)

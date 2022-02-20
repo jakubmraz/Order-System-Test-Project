@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,20 +6,21 @@ public class ContractPanel : MonoBehaviour
 {
     [SerializeField] private RectTransform ActiveContractPanel;
     [SerializeField] private TextMeshProUGUI BuildingName;
-    [SerializeField] private Image ItemImage;
-    [SerializeField] private Slider AmountSlider;
-    [SerializeField] private TextMeshProUGUI AmountNumber;
+    [SerializeField] private Image[] ItemImages;
+    [SerializeField] private TextMeshProUGUI[] ItemAmounts;
 
-    public void UpdateContractPanel(bool active, string name, Sprite sprite, int amountDesired, int amountDelivered)
+    public void UpdateContractPanel(bool active, string name, ContractRequest[] contractRequests)
     {
         if (active)
         {
             ActiveContractPanel.gameObject.SetActive(true);
             BuildingName.text = name;
-            ItemImage.sprite = sprite;
-            AmountSlider.maxValue = amountDesired;
-            AmountSlider.value = amountDelivered;
-            AmountNumber.text = $"{amountDelivered}/{amountDesired}";
+
+            for (int i = 0; i < 6; i++)
+            {
+                ItemImages[i].sprite = contractRequests[i].itemDesired.Sprite;
+                ItemAmounts[i].text = contractRequests[i].amountDelivered + "/" + contractRequests[i].amountDesired;
+            }
         }
         else ActiveContractPanel.gameObject.SetActive(false);
     }

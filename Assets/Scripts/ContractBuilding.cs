@@ -12,21 +12,17 @@ public class ContractBuilding : MonoBehaviour
 {
     [SerializeField] private ContractBuildingSO buildingData;
 
-    private const int DefaultAmountDesired = 3;
     //Minutes; to set hours, just write [hours] * 60
     private const int ContractCooldown = 3;
-    
+
     private bool contractActive;
-    private ItemData itemDesired;
-    private int amountDesired;
-    private int amountDelivered;
+    private ContractRequest[] contractRequests;
     private DateTime nextContractTime;
 
     [SerializeField] private Canvas popupCanvas;
     [SerializeField] private TextMeshProUGUI popupName;
-    [SerializeField] private Image popupItemImage;
-    [SerializeField] private TextMeshProUGUI popupAmount;
-    [SerializeField] private Slider popupSlider;
+    [SerializeField] private Image[] popupItemImages;
+    [SerializeField] private TextMeshProUGUI[] popupAmounts;
     [SerializeField] private RectTransform popupActiveContract;
     [SerializeField] private RectTransform popupInactiveContract;
     [SerializeField] private TextMeshProUGUI popupInactiveName;
@@ -51,35 +47,29 @@ public class ContractBuilding : MonoBehaviour
         return buildingData.DesiredItems;
     }
 
-    public bool GetContractInfo(out ItemData itemDesired, out int amountDesired, out int amountDelivered, out DateTime nextContractTime)
+    public bool GetContractInfo(out ContractRequest[] contractRequests, out DateTime nextContractTime)
     {
         if (contractActive)
         {
-            itemDesired = this.itemDesired;
-            amountDesired = this.amountDesired;
-            amountDelivered = this.amountDelivered;
+            contractRequests = this.contractRequests;
             nextContractTime = this.nextContractTime;
 
             return true;
         }
         else
         {
-            itemDesired = ItemDataAccessor.Instance.GetItemList()[0];
-            amountDesired = 0;
-            amountDelivered = 0;
+            contractRequests = new ContractRequest[6];
             nextContractTime = this.nextContractTime;
 
             return false;
         }
     }
 
-    public void LoadContract(bool active, ItemData itemDesired, int amountDesired, int amountDelivered,
+    public void LoadContract(bool active, ContractRequest[] contractRequests,
         DateTime nextContractTime)
     {
         contractActive = active;
-        this.itemDesired = itemDesired;
-        this.amountDesired = amountDesired;
-        this.amountDelivered = amountDelivered;
+        this.contractRequests = contractRequests;
         this.nextContractTime = nextContractTime;
 
         if (active)
@@ -90,13 +80,36 @@ public class ContractBuilding : MonoBehaviour
 
     public void DeliverItem()
     {
-        if (Inventory.Instance.CheckForNonBrokenItem(itemDesired.Name))
+        bool found = true;
+
+        while (found)
         {
-            Inventory.Instance.RemoveItem(itemDesired.Name);
-            amountDelivered++;
+            found = false;
+            foreach (var request in contractRequests)
+            {
+                if(request.amountDelivered == request.amountDesired) continue;
+
+                if (Inventory.Instance.CheckForNonBrokenItem(request.itemDesired.Name))
+                {
+                    Inventory.Instance.RemoveItem(request.itemDesired.Name);
+                    request.amountDelivered++;
+                    found = true;
+                }
+            }
         }
 
-        if (amountDelivered >= amountDesired)
+        bool fulfilled = true;
+
+        foreach (var request in contractRequests)
+        {
+            if (request.amountDelivered < request.amountDesired)
+            {
+                fulfilled = false;
+                break;
+            }
+        }
+
+        if (fulfilled)
         {
             FulfillContract();
         }
@@ -130,11 +143,21 @@ public class ContractBuilding : MonoBehaviour
         }
 
         contractActive = true;
-        itemDesired = buildingData.DesiredItems[Random.Range(0, GetBuildingDesiredItems().Count - 1)];
-        ContractSystem.Instance.AddContract(this);
+        contractRequests = new ContractRequest[6];
+        for (int i = 0; i < contractRequests.Length; i++)
+        {
+            Debug.Log(GetBuildingDesiredItems().Count);
+            contractRequests[i] = new ContractRequest
+            {
+                itemDesired = buildingData.DesiredItems[Random.Range(0, GetBuildingDesiredItems().Count)],
+                amountDelivered = 0
+            };
 
-        amountDelivered = 0;
-        amountDesired = DefaultAmountDesired;
+            if (contractRequests[i].itemDesired.Final) contractRequests[i].amountDesired = 1;
+            else contractRequests[i].amountDesired = Random.Range(3, 5);
+        }
+
+        ContractSystem.Instance.AddContract(this);
 
         ContractSystem.Instance.SaveContractData();
     }
@@ -146,10 +169,12 @@ public class ContractBuilding : MonoBehaviour
             popupActiveContract.gameObject.SetActive(true);
             popupInactiveContract.gameObject.SetActive(false);
             popupName.text = GetBuildingName();
-            popupItemImage.sprite = itemDesired.Sprite;
-            popupAmount.text = amountDelivered + "/" + amountDesired;
-            popupSlider.maxValue = amountDesired;
-            popupSlider.value = amountDelivered;
+
+            for (int i = 0; i < 6; i++)
+            {
+                popupItemImages[i].sprite = contractRequests[i].itemDesired.Sprite;
+                popupAmounts[i].text = contractRequests[i].amountDelivered + "/" + contractRequests[i].amountDesired;
+            }
         }
         else
         {

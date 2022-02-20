@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5134a440732e808449806a19b9e2eddc, type: 3}
-  m_Name: Bicycle Shop
+  m_Name: GarbageEnthusiasts
   m_EditorClassIdentifier: 
-  BuildingName: Bicycle Shop
+  BuildingName: Garbage Enthusiasts
   DesiredItems:
-  - {fileID: 11400000, guid: 1f8be7b8e4d803246aace6749e59d3d4, type: 2}
+  - {fileID: 11400000, guid: abacd216a400cbf45bc2ad849f278d90, type: 2}
   - {fileID: 11400000, guid: ed37169a9c2c6cf4ba34be78e5cad8b8, type: 2}
+  - {fileID: 11400000, guid: dfd112e6c1e077745a6a4b0ba9911194, type: 2}

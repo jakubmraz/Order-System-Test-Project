@@ -18,3 +18,4 @@ MonoBehaviour:
   Description: A plastic bag, used for carrying things around. Produces lots of plastic
     waste.
   Value: 5
+  Final: 1

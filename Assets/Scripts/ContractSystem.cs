@@ -55,13 +55,27 @@ public class ContractSystem : MonoBehaviour
 
         foreach (var contractBuilding in contractBuildings)
         {
-            bool active = contractBuilding.GetContractInfo(out ItemData itemDesired, out int amountDesired,
-                out int amountDelivered, out DateTime nextContractTime);
-            contractData +=
-                $"{active}#{itemDesired.Name}#{amountDesired}#{amountDelivered}#{nextContractTime};";
+            bool active = contractBuilding.GetContractInfo(out ContractRequest[] contractRequests, out DateTime nextContractTime);
+            contractData += $"{active}§";
+
+            foreach (var contractRequest in contractRequests)
+            {
+                if (contractRequest == null)
+                {
+                    contractData += "Bicycle#0#1§";
+                }
+                else
+                {
+                    contractData +=
+                        $"{contractRequest.itemDesired.Name}#{contractRequest.amountDesired}#{contractRequest.amountDelivered}§";
+                }
+            }
+
+            contractData += $"{nextContractTime};";
         }
 
         PlayerPrefs.SetString("ContractData", contractData);
+        PlayerPrefs.Save();
     }
 
     public void LoadContractData()
@@ -76,11 +90,21 @@ public class ContractSystem : MonoBehaviour
         {
             if (contracts[i] == "") break;
 
-            string[] contractDetails = contracts[i].Split('#');
-            Debug.Log(contracts[i]);
-            contractBuilding.LoadContract(Convert.ToBoolean(contractDetails[0]), ItemDataAccessor.Instance.GetItemData(contractDetails[1]),
-                Convert.ToInt32(contractDetails[2]), Convert.ToInt32(contractDetails[3]), DateTime.Parse(contractDetails[4]));
-
+            string[] contractRequests = contracts[i].Split('§');
+            bool active = Convert.ToBoolean(contractRequests[0]);
+            ContractRequest[] requests = new ContractRequest[6];
+            for (int j = 1; j < 7; j++)
+            {
+                string[] requestDetails = contractRequests[j].Split('#');
+                requests[j-1] = new ContractRequest()
+                {
+                    itemDesired = ItemDataAccessor.Instance.GetItemData(requestDetails[0]),
+                    amountDesired = Convert.ToInt32(requestDetails[1]),
+                    amountDelivered = Convert.ToInt32(requestDetails[2])
+                };
+            }
+            DateTime nextTime = DateTime.Parse(contractRequests[7]);
+            contractBuilding.LoadContract(active, requests, nextTime);
             i++;
         }
     }

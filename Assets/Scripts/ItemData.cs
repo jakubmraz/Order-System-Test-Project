@@ -12,6 +12,7 @@ public class ItemData:ScriptableObject
     public string Recipe;
     public string Description;
     public int Value;
+    public bool Final;
     //To explain, the 3x3 grid is first split into rows
     //000
     //000       -> 000 000 000 -> 000000000
