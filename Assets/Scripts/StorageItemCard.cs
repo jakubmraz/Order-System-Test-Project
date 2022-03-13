@@ -73,12 +73,14 @@ public class StorageItemCard : MonoBehaviour
 
     public void TakeItem()
     {
-        ItemSlot slot = Inventory.Instance.FindFirstEmptySlot();
-        if (slot)
-        {
-            slot.Item = Instantiate(slot.itemPrefab, slot.transform).GetComponent<Item>();
-            slot.Item.InitializeItem(item.Name);
-        }
+        //ItemSlot slot = Inventory.Instance.FindFirstEmptySlot();
+        //if (slot)
+        //{
+        //    slot.Item = Instantiate(slot.itemPrefab, slot.transform).GetComponent<Item>();
+        //    slot.Item.InitializeItem(item.Name);
+        //}
+
+        Inventory.Instance.AddItem(item.name, false);
 
         Storage.Instance.itemValues[item.Name]--;
         Storage.Instance.UpdateCardCounts();

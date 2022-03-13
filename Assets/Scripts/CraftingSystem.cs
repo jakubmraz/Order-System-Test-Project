@@ -79,7 +79,8 @@ public class CraftingSystem : MonoBehaviour
         foreach (var slot in craftingSlots)
         {
             if (slot.Item)
-                Destroy(slot.Item.gameObject);
+                slot.Item.RemoveOneItem();
+                //Destroy(slot.Item.gameObject);
         }
     }
 }

@@ -21,7 +21,7 @@ public class ContractInfoBoard : MonoBehaviour
 
         foreach (var activeContract in ContractSystem.Instance.GetActiveContracts())
         {
-            bool active = activeContract.GetContractInfo(out ContractRequest[] contractRequests, out _);
+            bool active = activeContract.GetContractInfo(out ContractRequest[] contractRequests, out _, out _);
 
             contractPanels[i].UpdateContractPanel(active, activeContract.GetBuildingName(), contractRequests);
 

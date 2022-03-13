@@ -55,7 +55,7 @@ public class ContractSystem : MonoBehaviour
 
         foreach (var contractBuilding in contractBuildings)
         {
-            bool active = contractBuilding.GetContractInfo(out ContractRequest[] contractRequests, out DateTime nextContractTime);
+            bool active = contractBuilding.GetContractInfo(out ContractRequest[] contractRequests, out DateTime nextContractTime, out DateTime contractStartTime);
             contractData += $"{active}§";
 
             foreach (var contractRequest in contractRequests)
@@ -71,9 +71,10 @@ public class ContractSystem : MonoBehaviour
                 }
             }
 
-            contractData += $"{nextContractTime};";
+            contractData += $"{nextContractTime}§{contractStartTime};";
         }
 
+        Debug.Log(contractData);
         PlayerPrefs.SetString("ContractData", contractData);
         PlayerPrefs.Save();
     }
@@ -96,7 +97,7 @@ public class ContractSystem : MonoBehaviour
             for (int j = 1; j < 7; j++)
             {
                 string[] requestDetails = contractRequests[j].Split('#');
-                requests[j-1] = new ContractRequest()
+                requests[j - 1] = new ContractRequest()
                 {
                     itemDesired = ItemDataAccessor.Instance.GetItemData(requestDetails[0]),
                     amountDesired = Convert.ToInt32(requestDetails[1]),
@@ -104,7 +105,8 @@ public class ContractSystem : MonoBehaviour
                 };
             }
             DateTime nextTime = DateTime.Parse(contractRequests[7]);
-            contractBuilding.LoadContract(active, requests, nextTime);
+            DateTime startedTime = DateTime.Parse(contractRequests[8]);
+            contractBuilding.LoadContract(active, requests, nextTime, startedTime);
             i++;
         }
     }

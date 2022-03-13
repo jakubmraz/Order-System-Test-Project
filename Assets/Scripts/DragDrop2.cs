@@ -21,7 +21,9 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     private GarbageCollection garbageCollection;
     private Item item;
 
-    private ItemSlot lastSlot;
+    public ItemSlot lastSlot;
+    public bool wasStack;
+    private bool hitItself;
 
     void Awake()
     {
@@ -43,6 +45,8 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         StopCoroutine(ShortClickCoroutine());
         shortClick = false;
 
+        bool broken = currentSlot.Item.IsBroken;
+
         lastSlot = currentSlot;
 
         if (currentSlot.IsResultSlot)
@@ -50,6 +54,18 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
             craftingSystem.CraftNewItem();
         }
 
+        if(currentSlot.Item.count > 1)
+        {
+            lastSlot.Item = Instantiate(lastSlot.itemPrefab, lastSlot.transform).GetComponent<Item>();
+            lastSlot.Item.InitializeItem(item.itemData.Name);
+            if (broken) lastSlot.Item.BreakItem();
+            lastSlot.Item.count = item.count - 1;
+            lastSlot.Item.UpdateCountText();
+            wasStack = true;
+
+            item.count = 1;
+            item.UpdateCountText();
+        }
 
         if (!canvas)
         {
@@ -95,7 +111,7 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
                 if (slot.Item == null && !slot.IsResultSlot && !slot.IsCollectionSlot && (!slot.IsRecycleSlot || (item.itemData.Recipe != "000000000" && item.IsBroken)))
                 {
                     // Swapping references.
-                    currentSlot.Item = null;
+                    if(!wasStack) currentSlot.Item = null;
                     currentSlot = slot;
                     currentSlot.Item = this.GetComponent<Item>();
                     if(craftingSystem)
@@ -104,6 +120,44 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 
                 else if (slot.Item != null && !slot.IsResultSlot && !slot.IsCollectionSlot && !currentSlot.IsCollectionSlot && !currentSlot.IsResultSlot && (!slot.IsRecycleSlot || (item.itemData.Recipe != "000000000" && item.IsBroken)))
                 {
+                    //Stack
+                    if(currentSlot.Item.itemData == slot.Item.itemData && currentSlot.Item.IsBroken == slot.Item.IsBroken && currentSlot.Item.count + slot.Item.count <= Inventory.MaxStackCount)
+                    {
+                        if (wasStack || slot != currentSlot)
+                        {
+                            slot.Item.count++;
+                            slot.Item.UpdateCountText();
+                            if (wasStack) hitItself = true;
+                        }
+                        
+                        if(slot == currentSlot && !wasStack)
+                        {
+                            break;
+                        }
+
+                        if(wasStack)
+                        {
+                            Destroy(this.gameObject);
+                            break;
+                        }
+
+                        Destroy(currentSlot.Item.gameObject);
+                        if(!wasStack) currentSlot.Item = null;
+                        
+                        break;
+                    }
+
+                    //Can't swap if from stack
+                    if(slot.Item.itemData != currentSlot.Item.itemData && wasStack)
+                    {
+                        break;
+                    }
+                    if(slot.Item.IsBroken != currentSlot.Item.IsBroken && wasStack)
+                    {
+                        break;
+                    }
+
+                    //Swap
                     currentSlot.Item = slot.Item;
                     currentSlot.Item.transform.SetParent(currentSlot.transform);
                     currentSlot.Item.transform.localPosition = Vector3.zero;
@@ -157,6 +211,17 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         transform.SetParent(currentSlot.transform);
         // And centering item position.
         transform.localPosition = Vector3.zero;
+
+        //Isn't dragged onto anything
+        if(currentSlot == lastSlot && currentSlot != null && wasStack && !hitItself)
+        {
+            lastSlot.Item.count++;
+            lastSlot.Item.UpdateCountText();
+            Destroy(this.gameObject);
+        }
+
+        wasStack = false;
+        hitItself = false;
     }
 
     public void OnPointerUp(PointerEventData eventData)

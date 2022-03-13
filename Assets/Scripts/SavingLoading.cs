@@ -18,7 +18,7 @@ public class SavingLoading : MonoBehaviour
         Instance = this;
 
         inventory = GetComponent<Inventory>();
-        LoadDataFromFile();
+        //LoadDataFromFile();
     }
 
     public void SaveOrderData()
@@ -27,7 +27,7 @@ public class SavingLoading : MonoBehaviour
         PlayerPrefs.SetString("Orders", orderString);
         PlayerPrefs.Save();
         SaveTime();
-        SaveDataToFile();
+        //SaveDataToFile();
     }
 
     public string LoadOrderData()
@@ -41,11 +41,13 @@ public class SavingLoading : MonoBehaviour
     public void SaveInventoryData()
     {
         inventoryString = inventory.GetInventoryString();
+        string numberString = inventory.GetInventoryNumbersString();
         PlayerPrefs.SetString("Inventory", inventoryString);
+        PlayerPrefs.SetString("InventoryNumbers", numberString);
         PlayerPrefs.Save();
         Debug.Log("Saved!," + inventoryString);
         SaveTime();
-        SaveDataToFile();
+        //SaveDataToFile();
     }
 
     public string LoadInventoryData()
@@ -53,8 +55,18 @@ public class SavingLoading : MonoBehaviour
         if(PlayerPrefs.HasKey("Inventory"))
             inventoryString = PlayerPrefs.GetString("Inventory");
 
-        Debug.Log("Loaded!," + inventoryString);
+        //Debug.Log("Loaded!," + inventoryString);
         return inventoryString;
+    }
+
+    public string LoadInventoryNumberData()
+    {
+        string numberString = "";
+        if (PlayerPrefs.HasKey("InventoryNumbers"))
+            numberString = PlayerPrefs.GetString("InventoryNumbers");
+
+        Debug.Log("Loaded!," + numberString);
+        return numberString;
     }
 
     //public void SaveCollectionData(int timeDivisor)
@@ -87,7 +99,7 @@ public class SavingLoading : MonoBehaviour
         PlayerPrefs.Save();
         Debug.Log("Saved!, " + containerString);
         SaveTime();
-        SaveDataToFile();
+        //SaveDataToFile();
     }
 
     public void LoadContainerData(List<GarbageContainer> containers)

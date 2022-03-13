@@ -14,10 +14,12 @@ public class ContractBuilding : MonoBehaviour
 
     //Minutes; to set hours, just write [hours] * 60
     private const int ContractCooldown = 3;
+    private const int ContractDuration = 24 * 60;
 
     private bool contractActive;
     private ContractRequest[] contractRequests;
     private DateTime nextContractTime;
+    private DateTime contractStartTime;
 
     [SerializeField] private Canvas popupCanvas;
     [SerializeField] private TextMeshProUGUI popupName;
@@ -28,12 +30,21 @@ public class ContractBuilding : MonoBehaviour
     [SerializeField] private TextMeshProUGUI popupInactiveName;
     [SerializeField] private TextMeshProUGUI popupInactiveCooldown;
     [SerializeField] private Button popupInactiveStartContractButton;
+    [SerializeField] private TextMeshProUGUI popupTimeCountdown;
 
     void Update()
     {
         if (popupCanvas.gameObject.activeInHierarchy)
         {
             UpdatePopupWindow();
+        }
+
+        if (contractActive)
+        {
+            if (contractStartTime.AddMinutes(ContractDuration) < DateTime.Now)
+            {
+                FulfillContract();
+            }
         }
     }
 
@@ -47,30 +58,31 @@ public class ContractBuilding : MonoBehaviour
         return buildingData.DesiredItems;
     }
 
-    public bool GetContractInfo(out ContractRequest[] contractRequests, out DateTime nextContractTime)
+    public bool GetContractInfo(out ContractRequest[] contractRequests, out DateTime nextContractTime, out DateTime contractStartTime)
     {
         if (contractActive)
         {
             contractRequests = this.contractRequests;
             nextContractTime = this.nextContractTime;
-
+            contractStartTime = this.contractStartTime;
             return true;
         }
         else
         {
             contractRequests = new ContractRequest[6];
             nextContractTime = this.nextContractTime;
-
+            contractStartTime = this.contractStartTime;
             return false;
         }
     }
 
     public void LoadContract(bool active, ContractRequest[] contractRequests,
-        DateTime nextContractTime)
+        DateTime nextContractTime, DateTime contractStartTime)
     {
         contractActive = active;
         this.contractRequests = contractRequests;
         this.nextContractTime = nextContractTime;
+        this.contractStartTime = contractStartTime;
 
         if (active)
         {
@@ -80,20 +92,14 @@ public class ContractBuilding : MonoBehaviour
 
     public void DeliverItem()
     {
-        bool found = true;
-
-        while (found)
+        foreach (var request in contractRequests)
         {
-            found = false;
-            foreach (var request in contractRequests)
+            for (int i = request.amountDelivered; i < request.amountDesired; i++)
             {
-                if(request.amountDelivered == request.amountDesired) continue;
-
                 if (Inventory.Instance.CheckForNonBrokenItem(request.itemDesired.Name))
                 {
                     Inventory.Instance.RemoveItem(request.itemDesired.Name);
                     request.amountDelivered++;
-                    found = true;
                 }
             }
         }
@@ -125,7 +131,21 @@ public class ContractBuilding : MonoBehaviour
         nextContractTime = DateTime.Now.AddMinutes(ContractCooldown);
 
         ContractSystem.Instance.SaveContractData();
-        //Give rewards
+        GiveRewards();
+    }
+
+    private void GiveRewards()
+    {
+        int completedRequests = 0;
+        foreach (var request in contractRequests)
+        {
+            if (request.amountDelivered == request.amountDesired)
+            {
+                completedRequests++;
+            }
+        }
+
+        //Give rewards based on number of completed requests
     }
 
     public void StartContract()
@@ -143,6 +163,7 @@ public class ContractBuilding : MonoBehaviour
         }
 
         contractActive = true;
+        contractStartTime = DateTime.Now;
         contractRequests = new ContractRequest[6];
         for (int i = 0; i < contractRequests.Length; i++)
         {
@@ -169,6 +190,8 @@ public class ContractBuilding : MonoBehaviour
             popupActiveContract.gameObject.SetActive(true);
             popupInactiveContract.gameObject.SetActive(false);
             popupName.text = GetBuildingName();
+            popupTimeCountdown.text = contractStartTime.AddMinutes(ContractDuration).Subtract(DateTime.Now).Hours +
+                                      ":" + contractStartTime.AddMinutes(ContractDuration).Subtract(DateTime.Now).Minutes;
 
             for (int i = 0; i < 6; i++)
             {
