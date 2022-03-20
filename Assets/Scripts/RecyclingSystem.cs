@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -66,7 +64,14 @@ public class RecyclingSystem : MonoBehaviour
             i++;
         }
 
-        Destroy(entrySlot.Item.gameObject);
+        entrySlot.Item.RemoveOneItem();
+        if (entrySlot.Item.count == 0)
+        {
+            Destroy(entrySlot.Item.gameObject);
+            entrySlot.Item = null;
+        }
+
+        DisableRecycleButton();
     }
 
     public bool CheckIfResultSlotsEmpty()

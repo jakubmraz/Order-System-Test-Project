@@ -269,6 +269,7 @@ public class Inventory : MonoBehaviour
         if (nonFullSlot != null)
         {
             nonFullSlot.Item.count++;
+            nonFullSlot.Item.UpdateCountText();
             return;
         }
 
