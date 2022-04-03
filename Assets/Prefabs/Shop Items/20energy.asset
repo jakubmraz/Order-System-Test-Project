@@ -18,3 +18,4 @@ MonoBehaviour:
   Price: 200
   AmountAdded: 20
   Item: {fileID: 0}
+  Big: 1
