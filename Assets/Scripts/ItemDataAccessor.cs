@@ -28,4 +28,9 @@ public class ItemDataAccessor : MonoBehaviour
     {
         return items.BaseItemList;
     }
+
+    public List<ItemData> GetFullItemList()
+    {
+        return items.ItemList.Concat(items.BaseItemList).ToList();
+    }
 }

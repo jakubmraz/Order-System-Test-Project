@@ -72,6 +72,12 @@ public class RecyclingSystem : MonoBehaviour
         }
 
         DisableRecycleButton();
+
+        //if(PlayerPrefs.HasKey("Recycled")){
+        //    if(PlayerPrefs.GetInt("Recycled") == 1) return;           
+        //}
+        //PlayerPrefs.SetInt("Recycled", 1);
+        //PlayerPrefs.Save();
     }
 
     public bool CheckIfResultSlotsEmpty()

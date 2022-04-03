@@ -81,6 +81,12 @@ public class PlayerValues : MonoBehaviour
         return true;
     }
 
+    public bool CheckMoney(int amount)
+    {
+        if (PlayerMoney < amount) return false;
+        return true;
+    }
+
     public void AddMoney(int amount)
     {
         PlayerMoney += amount;

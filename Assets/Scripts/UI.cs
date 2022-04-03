@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Security.Cryptography.X509Certificates;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
@@ -19,6 +20,7 @@ public class UI : MonoBehaviour
     [SerializeField] private GarbageCollection garbageCollection;
     [SerializeField] private RectTransform recyclingSystem;
     [SerializeField] private RectTransform storageScreen;
+    [SerializeField] private RectTransform storeScreen;
 
     [SerializeField] private RectTransform winPanel;
     [SerializeField] private RectTransform lossPanel;
@@ -118,6 +120,16 @@ public class UI : MonoBehaviour
         garbageCollectionScreen.gameObject.SetActive(false);
         recyclingSystem.gameObject.SetActive(false);
         storageScreen.gameObject.SetActive(false);
+        storeScreen.gameObject.SetActive(false);
+    }
+
+    public void ShowShopScreen()
+    {
+        inventoryButton.gameObject.SetActive(false);
+        background.gameObject.SetActive(true);
+        storeScreen.gameObject.SetActive(true);
+        Shop.Instance.ShowTab("Energy");
+        Shop.Instance.UpdateShopCards();
     }
 
     public void ShowVictoryScreen()
