@@ -118,10 +118,11 @@ public class Shop : MonoBehaviour
             card.UpdateUI();
         }
 
-        if(GetStock(shopItem.Item) != -1)
-        {
-            itemStock[shopItem.Item]--;
-        }
+        if(shopItem.Kind == ShopItemSO.ItemKind.Resource || shopItem.Kind == ShopItemSO.ItemKind.Item)
+            if(GetStock(shopItem.Item) != -1)
+            {
+                itemStock[shopItem.Item]--;
+            }
 
         SaveShopStock();
     }
@@ -242,30 +243,38 @@ public class Shop : MonoBehaviour
 
         RectTransform lastLayout = new RectTransform();
 
+        bool newGroup = false;
         for(int i = 0; i < itemsList.Count(); i++)
         {
-            if(i % 2 == 0 || itemsList[i].Big)
+            if(!newGroup || itemsList[i].Big)
             {
                 lastLayout = Instantiate(layoutGroupPrefab, shopGridLayout).GetComponent<RectTransform>();
                 cardContainers.Add(lastLayout);
                 ShopItemCard itemCard = Instantiate(itemCardPrefab, lastLayout).GetComponent<ShopItemCard>();
                 itemCard.InitializeUI(itemsList[i]);
                 itemCards.Add(itemCard);
+                if(!itemsList[i].Big) newGroup = true;
             }
             else if (!itemsList[i].Big)
             {
                 ShopItemCard itemCard = Instantiate(itemCardPrefab, lastLayout).GetComponent<ShopItemCard>();
                 itemCard.InitializeUI(itemsList[i]);
                 itemCards.Add(itemCard);
+                newGroup = false;
             }
 
             if(i != itemsList.Count() - 1)
-                if(itemsList[i+1].Big)
+                if(itemsList[i+1].Big && !itemsList[i].Big)
+                {
                     Instantiate(emptyObjectPrefab, lastLayout);
+                    newGroup = false;
+                }                    
 
-            if(i == itemsList.Count() - 1 && i % 2 == 0 && !itemsList[i].Big)
+            if(i == itemsList.Count() - 1 && newGroup && !itemsList[i].Big)
+            {
                 Instantiate(emptyObjectPrefab, lastLayout);
-            
+                newGroup = true;
+            }            
         }
     }
 
