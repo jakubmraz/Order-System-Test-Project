@@ -264,7 +264,7 @@ public class Shop : MonoBehaviour
             }
 
             if(i != itemsList.Count() - 1)
-                if(itemsList[i+1].Big && !itemsList[i].Big)
+                if(itemsList[i+1].Big && !itemsList[i].Big && newGroup)
                 {
                     Instantiate(emptyObjectPrefab, lastLayout);
                     newGroup = false;
