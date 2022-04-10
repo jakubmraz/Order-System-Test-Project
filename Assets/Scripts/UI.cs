@@ -21,6 +21,7 @@ public class UI : MonoBehaviour
     [SerializeField] private RectTransform recyclingSystem;
     [SerializeField] private RectTransform storageScreen;
     [SerializeField] private RectTransform storeScreen;
+    [SerializeField] private RectTransform missionScreen;
 
     [SerializeField] private RectTransform winPanel;
     [SerializeField] private RectTransform lossPanel;
@@ -121,6 +122,15 @@ public class UI : MonoBehaviour
         recyclingSystem.gameObject.SetActive(false);
         storageScreen.gameObject.SetActive(false);
         storeScreen.gameObject.SetActive(false);
+        missionScreen.gameObject.SetActive(false);
+    }
+
+    public void ShowMissionScreen()
+    {
+        inventoryButton.gameObject.SetActive(false);
+        background.gameObject.SetActive(true);
+        missionScreen.gameObject.SetActive(true);
+        MissionSystem.Instance.OnUIOpened();
     }
 
     public void ShowShopScreen()

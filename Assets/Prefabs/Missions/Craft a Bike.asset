@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6de0e2754060de45961346dff4e17c0, type: 3}
+  m_Name: Craft a Bike
+  m_EditorClassIdentifier: 
+  Name: Craft a Bike
+  Chapter: 1
+  Description: You need to craft a bike.
+  Goals: Craft a bike.
+  MoneyReward: 100
+  XpReward: 100
+  PrefName: MissionBikeCrafted
+  PrefGoalValue: 1
+  Sprite: {fileID: 21300000, guid: 85fe6784f728b804d81a11b3d36d3e7d, type: 3}

@@ -76,6 +76,12 @@ public class CraftingSystem : MonoBehaviour
 
     public void CraftNewItem()
     {
+        if(resultSlot.Item.itemData.Name == "Bicycle")
+        {
+            PlayerPrefs.SetInt("MissionBikeCrafted", 1);
+            PlayerPrefs.Save();
+        }
+
         foreach (var slot in craftingSlots)
         {
             if (slot.Item)

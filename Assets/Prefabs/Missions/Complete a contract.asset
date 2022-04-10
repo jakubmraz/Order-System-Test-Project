@@ -9,13 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75b7222b2b57e5248bef44c320c3336a, type: 3}
-  m_Name: 1energy
+  m_Script: {fileID: 11500000, guid: d6de0e2754060de45961346dff4e17c0, type: 3}
+  m_Name: Complete a contract
   m_EditorClassIdentifier: 
-  Kind: 0
-  Name: Corny Bar
+  Name: Complete a Contract
+  Chapter: 2
+  Description: A contract needs to be completed.
+  Goals: Complete a contract.\nThat is all.
+  MoneyReward: 100
+  XpReward: 100
+  PrefName: MissionContractCompleted
+  PrefGoalValue: 1
   Sprite: {fileID: 21300000, guid: 098f2ed12a3931646a8f32b05ceea0ba, type: 3}
-  Price: 5
-  AmountAdded: 1
-  Item: {fileID: 0}
-  Big: 0

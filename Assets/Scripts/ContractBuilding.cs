@@ -145,6 +145,15 @@ public class ContractBuilding : MonoBehaviour
             }
         }
 
+        if(completedRequests == 6)
+        {
+            if(PlayerPrefs.HasKey("MissionContractCompleted")){
+                    if(PlayerPrefs.GetInt("MissionContractCompleted") == 1) return;           
+            }
+            PlayerPrefs.SetInt("MissionContractCompleted", 1);
+            PlayerPrefs.Save();
+        }
+        
         //Give rewards based on number of completed requests
     }
 

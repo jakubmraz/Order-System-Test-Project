@@ -87,6 +87,12 @@ public class Order : MonoBehaviour
         cooldownTimerTMP.gameObject.SetActive(true);
 
         completedTime = DateTime.Now;
+
+        if(PlayerPrefs.HasKey("MissionOrderFulfilled")){
+            if(PlayerPrefs.GetInt("MissionOrderFulfilled") == 1) yield break;           
+        }
+        PlayerPrefs.SetInt("MissionOrderFulfilled", 1);
+        PlayerPrefs.Save();
     }
 
     public void SkipOrder()

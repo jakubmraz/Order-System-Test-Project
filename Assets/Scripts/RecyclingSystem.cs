@@ -64,6 +64,9 @@ public class RecyclingSystem : MonoBehaviour
             i++;
         }
 
+        if(entrySlot.Item.itemData.name == "Bag")
+            FiveBagsMission();
+
         entrySlot.Item.RemoveOneItem();
         if (entrySlot.Item.count == 0)
         {
@@ -73,11 +76,34 @@ public class RecyclingSystem : MonoBehaviour
 
         DisableRecycleButton();
 
-        //if(PlayerPrefs.HasKey("Recycled")){
-        //    if(PlayerPrefs.GetInt("Recycled") == 1) return;           
-        //}
-        //PlayerPrefs.SetInt("Recycled", 1);
-        //PlayerPrefs.Save();
+        ItemRecycledMission();        
+    }
+
+    private void ItemRecycledMission()
+    {
+        if(PlayerPrefs.HasKey("MissionItemRecycled")){
+            if(PlayerPrefs.GetInt("MissionItemRecycled") == 1) return;           
+        }
+        PlayerPrefs.SetInt("MissionItemRecycled", 1);
+        PlayerPrefs.Save();
+    }
+
+    private void FiveBagsMission()
+    {
+        if(PlayerPrefs.HasKey("Mission5Bags")){
+            int number = PlayerPrefs.GetInt("Mission5Bags");   
+
+            if(number == 5) return;
+
+            number++;
+
+            PlayerPrefs.SetInt("Mission5Bags", number);
+            PlayerPrefs.Save();
+            
+            return;
+        }
+        PlayerPrefs.SetInt("Mission5Bags", 1);
+        PlayerPrefs.Save();
     }
 
     public bool CheckIfResultSlotsEmpty()
