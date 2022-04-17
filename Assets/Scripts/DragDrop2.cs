@@ -6,8 +6,11 @@ using UnityEngine.UI;
 
 public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler, IPointerUpHandler
 {
-    private float shortClickThreshold = 1f;
+    private float shortClickThreshold = 0.5f;
     private bool shortClick;
+    private bool longClick;
+    private bool dragging;
+    private int draggedAmount;
 
     // Reference to current item slot.
     public ItemSlot currentSlot;
@@ -42,8 +45,19 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     /// <param name="eventData">Event data.</param>
     public void OnBeginDrag(PointerEventData eventData)
     {
-        StopCoroutine(ShortClickCoroutine());
-        shortClick = false;
+        //StopCoroutine(ShortClickCoroutine());
+        //shortClick = false;
+
+        dragging = true;
+        StopCoroutine(LongClickCoroutine());
+        bool wasLongClick = false;
+        draggedAmount = 1;
+        if(longClick)
+        {
+            wasLongClick = true;
+            draggedAmount = currentSlot.Item.count;
+            longClick = false;
+        }
 
         bool broken = currentSlot.Item.IsBroken;
 
@@ -54,7 +68,7 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
             craftingSystem.CraftNewItem();
         }
 
-        if(currentSlot.Item.count > 1)
+        if(currentSlot.Item.count > 1 && !wasLongClick)
         {
             lastSlot.Item = Instantiate(lastSlot.itemPrefab, lastSlot.transform).GetComponent<Item>();
             lastSlot.Item.InitializeItem(item.itemData.Name);
@@ -125,7 +139,7 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
                     {
                         if (wasStack || slot != currentSlot)
                         {
-                            slot.Item.count++;
+                            slot.Item.count += draggedAmount;
                             slot.Item.UpdateCountText();
                             if (wasStack) hitItself = true;
                         }
@@ -222,10 +236,14 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 
         wasStack = false;
         hitItself = false;
+        draggedAmount = 1;
+        item.SetGlow(false);
+        dragging = false;
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        /*
         if (shortClick)
         {
             ItemTooltip.Instance.ShowTooltip(item);
@@ -233,11 +251,16 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 
         StopCoroutine(ShortClickCoroutine());
         shortClick = false;
+        */
+        longClick = false;
+        item.SetGlow(false);
+        StopCoroutine(LongClickCoroutine());
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        StartCoroutine(ShortClickCoroutine());
+        //StartCoroutine(ShortClickCoroutine());
+        StartCoroutine(LongClickCoroutine());
     }
 
     private IEnumerator ShortClickCoroutine()
@@ -245,5 +268,15 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         shortClick = true;
         yield return new WaitForSeconds(shortClickThreshold);
         shortClick = false;
+    }
+
+    private IEnumerator LongClickCoroutine()
+    {
+        longClick = false;
+        Debug.Log("1");
+        yield return new WaitForSeconds(shortClickThreshold);
+        longClick = true;
+        if(!dragging) item.SetGlow(true);
+        Debug.Log("2");
     }
 }

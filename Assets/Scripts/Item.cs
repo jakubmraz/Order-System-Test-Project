@@ -8,10 +8,11 @@ public class Item : MonoBehaviour
 {
     private Image itemImage;
     [SerializeField] private TextMeshProUGUI itemCountTMP;
+    [SerializeField] private Image glow;
 
     public ItemData itemData;
     public bool IsBroken = false;
-    public int count;
+    public int count;    
 
     public void InitializeItem(string item)
     {
@@ -20,6 +21,7 @@ public class Item : MonoBehaviour
         itemImage.sprite = itemData.Sprite;
         count = 1;
         itemCountTMP.text = "" + count;
+        glow.enabled = false;
     }
 
     public void BreakItem()
@@ -37,5 +39,10 @@ public class Item : MonoBehaviour
     {
         count--;
         UpdateCountText();
+    }
+
+    public void SetGlow(bool whatTo)
+    {
+        glow.enabled = whatTo;
     }
 }

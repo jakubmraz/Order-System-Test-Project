@@ -44,6 +44,14 @@ public class RecyclingSystem : MonoBehaviour
         int i = 0;
         int itemsPenalised = 0;
 
+        int itemsContainedRecipe = 0;
+
+        foreach(string component in splitString)
+        {
+            if(component != "" && component != "0")
+                itemsContainedRecipe++;
+        }
+
         foreach (var itemSlot in resultSlots)
         {
             if (splitString[i] != "0")
@@ -53,6 +61,7 @@ public class RecyclingSystem : MonoBehaviour
                     if (Random.Range(0, 2) == 1)
                     {
                         itemsPenalised++;
+                        if(itemsContainedRecipe < 3) itemsPenalised++;
                         i++;
                         continue;
                     }
