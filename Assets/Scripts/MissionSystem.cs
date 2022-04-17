@@ -51,14 +51,25 @@ public class MissionSystem : MonoBehaviour
         OnUIOpened();
     }
 
+    //Also called when the current missions tab button is pressed because the functionality would be the same
     public void OnUIOpened()
+    {
+        PopulateUI(GetCurrentMissions());
+    }
+
+    public void ShowCompletedMissions()
+    {
+        PopulateUI(GetCompletedMissions());
+    }
+
+    public void PopulateUI(List<MissionSO> missionList)
     {
         foreach(Transform child in missionUiContainer)
         {
             Destroy(child.gameObject);
         }
 
-        foreach(MissionSO mission in missions.OrderByDescending(x => x.Chapter))
+        foreach(MissionSO mission in missionList.OrderByDescending(x => x.Chapter))
         {
             MissionUI missionUI = Instantiate(missionUiPrefab, missionUiContainer).GetComponent<MissionUI>();
 
@@ -71,6 +82,42 @@ public class MissionSystem : MonoBehaviour
         }
 
         missionInfoWindow.gameObject.SetActive(false);
+    }
+
+    public List<MissionSO> GetCurrentMissions()
+    {
+        int currentChapter = 1;
+
+        foreach(MissionSO mission in missions.OrderBy(x => x.Chapter))
+        {
+            if(!IsMissionCompleted(mission)){
+                currentChapter = mission.Chapter;
+                break;
+            }
+        }
+
+        List<MissionSO> filteredMissions = new List<MissionSO>();
+        for(int i = 0; i < missions.Count(); i++)
+        {
+            if(!IsMissionCompleted(missions[i]) && missions[i].Chapter == currentChapter)
+            {
+                filteredMissions.Add(missions[i]);
+            }
+        }
+        return filteredMissions;
+    }
+
+    public List<MissionSO> GetCompletedMissions()
+    {
+        List<MissionSO> filteredMissions = new List<MissionSO>();
+        for(int i = 0; i < missions.Count(); i++)
+        {
+            if(IsMissionCompleted(missions[i]))
+            {
+                filteredMissions.Add(missions[i]);
+            }
+        }
+        return filteredMissions;
     }
 
     public void ShowMissionInfo(MissionSO mission)
@@ -95,6 +142,8 @@ public class MissionSystem : MonoBehaviour
 
         if(actualValue == expectedValue) completeButton.enabled = true;        
         else completeButton.enabled = false;
+
+        if(IsMissionCompleted(mission)) completeButton.enabled = false;
     }
 
     private bool IsMissionCompleted(MissionSO mission)

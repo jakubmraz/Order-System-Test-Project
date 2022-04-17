@@ -28,7 +28,7 @@ public class MissionUI : MonoBehaviour
         sliderText.text = $"{realValue}/{expectedValue}";
         xpRewardText.text = mission.XpReward.ToString();
         goldRewardText.text = mission.MoneyReward.ToString();
-        GetComponent<Button>().enabled = !completed;
+        //GetComponent<Button>().enabled = !completed;
     }
 
     public void ShowMissionInfo()
