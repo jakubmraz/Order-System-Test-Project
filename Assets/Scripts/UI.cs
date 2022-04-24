@@ -138,7 +138,7 @@ public class UI : MonoBehaviour
         inventoryButton.gameObject.SetActive(false);
         background.gameObject.SetActive(true);
         storeScreen.gameObject.SetActive(true);
-        Shop.Instance.ShowTab("Energy");
+        //Shop.Instance.ShowTab("Energy");
         Shop.Instance.UpdateShopCards();
     }
 

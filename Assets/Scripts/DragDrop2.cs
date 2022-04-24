@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -49,7 +49,8 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         //shortClick = false;
 
         dragging = true;
-        StopCoroutine(LongClickCoroutine());
+        //StopCoroutine(LongClickCoroutine());
+        StopAllCoroutines();
         bool wasLongClick = false;
         draggedAmount = 1;
         if(longClick)
@@ -254,7 +255,8 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         */
         longClick = false;
         item.SetGlow(false);
-        StopCoroutine(LongClickCoroutine());
+        //(LStopCoroutineongClickCoroutine());
+        StopAllCoroutines();
     }
 
     public void OnPointerDown(PointerEventData eventData)

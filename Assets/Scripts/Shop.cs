@@ -10,10 +10,11 @@ public class Shop : MonoBehaviour
 {
     public static Shop Instance {get; private set;}
 
-    [SerializeField] private List<ShopItemSO> shopItems;
-
+    [SerializeField] private ShopLayout shopLayout;
+    private List<ShopItemSO> shopItems;
     private List<ShopItemCard> itemCards;
-    private List<RectTransform> cardContainers;
+
+    //private List<RectTransform> cardContainers;
 
     private Dictionary<ItemData, int> itemStock;
 
@@ -21,10 +22,12 @@ public class Shop : MonoBehaviour
     private const int ItemStockSize = 5;
 
     //UI
+    /* Not needed, Shop does not instantiate the layout anymore
     [SerializeField] private ShopItemCard itemCardPrefab;
     [SerializeField] private RectTransform layoutGroupPrefab;
     [SerializeField] private RectTransform emptyObjectPrefab;
     [SerializeField] private RectTransform shopGridLayout;
+    */
     [SerializeField] private TextMeshProUGUI EnergyTabButton;
     [SerializeField] private TextMeshProUGUI ItemTabButton;
     [SerializeField] private TextMeshProUGUI ResourceTabButton;
@@ -35,16 +38,30 @@ public class Shop : MonoBehaviour
     {
         Instance = this;
         itemCards = new List<ShopItemCard>();
-        cardContainers = new List<RectTransform>();
+        //cardContainers = new List<RectTransform>();
         itemStock = new Dictionary<ItemData, int>();
 
+        shopLayout.GetAllShopItems(out shopItems, out itemCards);
+
+        foreach(ShopItemSO item in shopItems)
+        {
+            if(item.Kind == ShopItemSO.ItemKind.Item || item.Kind == ShopItemSO.ItemKind.Resource) itemStock.Add(item.Item, 0);
+        }
+
+        foreach(ShopItemCard itemCard in itemCards)
+        {
+            itemCard.InitializeUI();
+        }
+
+        /*
         foreach(ShopItemSO item in shopItems){
             ShopItemCard itemCard = Instantiate(itemCardPrefab, shopGridLayout).GetComponent<ShopItemCard>();
             itemCards.Add(itemCard);
             if(item.Kind == ShopItemSO.ItemKind.Item || item.Kind == ShopItemSO.ItemKind.Resource) itemStock.Add(item.Item, 0);
             itemCard.InitializeUI(item);
         }
-
+        */
+        
         if(LoadShopStock(out Dictionary<ItemData, int> loadedStock) && !IsNewDay())
         {
             itemStock = loadedStock;
@@ -59,7 +76,7 @@ public class Shop : MonoBehaviour
                 else
                     itemStock[item] = ResourceStockSize;
             }
-        }
+        }        
     }
 
     public void Update(){
@@ -190,6 +207,7 @@ public class Shop : MonoBehaviour
         }
     }
 
+    /*
     public void ShowTab(string kind)
     {
         switch(kind)
@@ -220,7 +238,9 @@ public class Shop : MonoBehaviour
                 break;
         }
     }
+    */
 
+    /*
     private void FillShopItems(ShopItemSO.ItemKind kind)
     {
         foreach(ShopItemCard card in itemCards)
@@ -277,6 +297,7 @@ public class Shop : MonoBehaviour
             }            
         }
     }
+    */
 
     private void SwitchTabButtonColour(string tab)
     {

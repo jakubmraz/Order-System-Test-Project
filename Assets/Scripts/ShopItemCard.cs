@@ -6,7 +6,7 @@ using TMPro;
 
 public class ShopItemCard : MonoBehaviour
 {
-    [HideInInspector] public ShopItemSO ShopItem;
+    public ShopItemSO ShopItem;
 
     [SerializeField] private Image itemImage;
     [SerializeField] private TextMeshProUGUI itemName;
@@ -20,9 +20,8 @@ public class ShopItemCard : MonoBehaviour
         Shop.Instance.ActivateItem(ShopItem);
     }
 
-    public void InitializeUI(ShopItemSO shopItem)
+    public void InitializeUI()
     {
-        ShopItem = shopItem;
         itemImage.sprite = ShopItem.Sprite;
         itemName.text = ShopItem.Name;
         itemPrice.text = ShopItem.Price.ToString();
