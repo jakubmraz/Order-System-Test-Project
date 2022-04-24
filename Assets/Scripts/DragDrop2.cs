@@ -219,7 +219,7 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         }
         catch
         {
-            Debug.Log("Recycling system script not found.");
+            //Debug.Log("Recycling system script not found.");
         }
 
         // Changing parent back to slot.
@@ -275,10 +275,8 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     private IEnumerator LongClickCoroutine()
     {
         longClick = false;
-        Debug.Log("1");
         yield return new WaitForSeconds(shortClickThreshold);
         longClick = true;
         if(!dragging) item.SetGlow(true);
-        Debug.Log("2");
     }
 }

@@ -95,4 +95,17 @@ public class CraftingSystem : MonoBehaviour
             }
         }
     }
+
+    public void CraftButton()
+    {
+        if(resultSlot.Item == null) return;
+
+        ItemData item = resultSlot.Item.itemData;
+        Inventory.Instance.AddItem(item.Name, false);
+
+        CraftNewItem();
+
+        Destroy(resultSlot.Item.gameObject);
+        resultSlot.Item = null;        
+    }
 }

@@ -22,6 +22,7 @@ public class UI : MonoBehaviour
     [SerializeField] private RectTransform storageScreen;
     [SerializeField] private RectTransform storeScreen;
     [SerializeField] private RectTransform missionScreen;
+    [SerializeField] private ItemDepository depositoryScreen;
 
     [SerializeField] private RectTransform winPanel;
     [SerializeField] private RectTransform lossPanel;
@@ -32,6 +33,7 @@ public class UI : MonoBehaviour
     public List<ItemSlot> CraftingScreenItemSlots;
     public List<ItemSlot> CollectionScreenItemSlots;
     public List<ItemSlot> RecyclingScreenItemSlots;
+    public List<ItemSlot> DespositoryItemSlots;
 
     private SavingLoading savingLoading;
     private RealTimeEffects realTimeEffects;
@@ -123,6 +125,8 @@ public class UI : MonoBehaviour
         storageScreen.gameObject.SetActive(false);
         storeScreen.gameObject.SetActive(false);
         missionScreen.gameObject.SetActive(false);
+        depositoryScreen.OnClosed();
+        depositoryScreen.gameObject.SetActive(false);        
     }
 
     public void ShowMissionScreen()
@@ -181,5 +185,14 @@ public class UI : MonoBehaviour
         savingLoading.SaveInventoryData();
         garbageCollection.gameObject.SetActive(false);
         garbageCollectionScreen.gameObject.SetActive(false);
+    }
+
+    public void ShowDepositoryScreen()
+    {
+        inventoryButton.gameObject.SetActive(false);
+        background.gameObject.SetActive(true);
+        depositoryScreen.gameObject.SetActive(true);
+        inventory.AssignNewInventorySlots(DespositoryItemSlots);
+        depositoryScreen.OnOpened();
     }
 }

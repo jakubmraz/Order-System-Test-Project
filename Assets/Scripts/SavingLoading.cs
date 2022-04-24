@@ -45,7 +45,7 @@ public class SavingLoading : MonoBehaviour
         PlayerPrefs.SetString("Inventory", inventoryString);
         PlayerPrefs.SetString("InventoryNumbers", numberString);
         PlayerPrefs.Save();
-        Debug.Log("Saved!," + inventoryString);
+        //Debug.Log("Saved!," + inventoryString);
         SaveTime();
         //SaveDataToFile();
     }
@@ -65,7 +65,7 @@ public class SavingLoading : MonoBehaviour
         if (PlayerPrefs.HasKey("InventoryNumbers"))
             numberString = PlayerPrefs.GetString("InventoryNumbers");
 
-        Debug.Log("Loaded!," + numberString);
+        //Debug.Log("Loaded!," + numberString);
         return numberString;
     }
 
