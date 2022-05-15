@@ -18,3 +18,4 @@ MonoBehaviour:
   Description: A bicycle, used for getting around fast.
   Value: 200
   Final: 1
+  Level: 3

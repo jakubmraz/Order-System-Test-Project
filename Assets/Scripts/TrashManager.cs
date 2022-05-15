@@ -32,6 +32,7 @@ public class TrashManager : MonoBehaviour
                 if((DateTime.Now - pickups[i]).TotalMinutes < TrashRespawnTime)
                 {
                     trashpiles[i].gameObject.SetActive(false);
+                    trashpiles[i].PickedUpTime = pickups[i];
                 }
             }
         }
