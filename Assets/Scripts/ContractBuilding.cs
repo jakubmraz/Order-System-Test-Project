@@ -20,6 +20,7 @@ public class ContractBuilding : MonoBehaviour
     private ContractRequest[] contractRequests;
     private DateTime nextContractTime;
     private DateTime contractStartTime;
+    private int requiredLevel;
 
     [SerializeField] private Canvas popupCanvas;
     [SerializeField] private TextMeshProUGUI popupName;
@@ -31,6 +32,16 @@ public class ContractBuilding : MonoBehaviour
     [SerializeField] private TextMeshProUGUI popupInactiveCooldown;
     [SerializeField] private Button popupInactiveStartContractButton;
     [SerializeField] private TextMeshProUGUI popupTimeCountdown;
+
+    void Start()
+    {
+        requiredLevel = 0;
+        foreach(var item in buildingData.DesiredItems)
+        {
+            if (item.Level > requiredLevel)
+                requiredLevel = item.Level;
+        }
+    }
 
     void Update()
     {
@@ -219,6 +230,12 @@ public class ContractBuilding : MonoBehaviour
                 popupInactiveStartContractButton.gameObject.SetActive(false);
                 popupInactiveCooldown.gameObject.SetActive(true);
                 popupInactiveCooldown.text = $"Next contract in: {timespan.Hours}:{timespan.Minutes}";
+            }
+            else if (requiredLevel > PlayerValues.Instance.PlayerLevel)
+            {
+                popupInactiveStartContractButton.gameObject.SetActive(false);
+                popupInactiveCooldown.gameObject.SetActive(true);
+                popupInactiveCooldown.text = $"You need to be at least level {requiredLevel} to accept this contract.";
             }
             else
             {
