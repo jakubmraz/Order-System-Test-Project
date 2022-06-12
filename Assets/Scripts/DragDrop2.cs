@@ -136,7 +136,7 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
                 else if (slot.Item != null && !slot.IsResultSlot && !slot.IsCollectionSlot && !currentSlot.IsCollectionSlot && !currentSlot.IsResultSlot && (!slot.IsRecycleSlot || (item.itemData.Recipe != "000000000" && item.IsBroken)))
                 {
                     //Stack
-                    if(currentSlot.Item.itemData == slot.Item.itemData && currentSlot.Item.IsBroken == slot.Item.IsBroken && currentSlot.Item.count + slot.Item.count <= Inventory.MaxStackCount)
+                    if(currentSlot.Item.itemData == slot.Item.itemData && currentSlot.Item.IsBroken == slot.Item.IsBroken && draggedAmount + slot.Item.count <= Inventory.MaxStackCount)
                     {
                         if (wasStack || slot != currentSlot)
                         {
@@ -158,16 +158,15 @@ public class DragDrop2 : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 
                         Destroy(currentSlot.Item.gameObject);
                         if(!wasStack) currentSlot.Item = null;
-                        
+
+                        if (craftingSystem)
+                            craftingSystem.Craft();
+
                         break;
                     }
 
                     //Can't swap if from stack
-                    if(slot.Item.itemData != currentSlot.Item.itemData && wasStack)
-                    {
-                        break;
-                    }
-                    if(slot.Item.IsBroken != currentSlot.Item.IsBroken && wasStack)
+                    if(wasStack)
                     {
                         break;
                     }
